@@ -2,7 +2,8 @@
 #define __GAME_H__
 #include <SDL.h>
 #include "logging.h"
-#include "GameObject.h"
+#include "SDLGameObject.h"
+#include "GameStateMachine.h"
 
 class Game
 {
@@ -31,6 +32,8 @@ class Game
     bool running() { return m_bRunning; }
     SDL_Renderer* getRenderer() const { return m_pRenderer; }
     
+    GameStateMachine* getStateMachine(){ return m_pGameStateMachine; }
+    
     private:
     Game(){}
     // create the s_pInstance member variable
@@ -39,11 +42,9 @@ class Game
     SDL_Window* m_pWindow = 0;
     SDL_Renderer* m_pRenderer = 0;
 
-    SDL_Texture* m_pTexture; // the new SDL_Texture variable
 
-    int m_currentFrame;
-    std::vector<GameObject*> m_gameObjects;
-
+    //add an object of our GameStateMachine
+    GameStateMachine* m_pGameStateMachine;
     bool m_bRunning;
     LogManager logconsoler;
 };

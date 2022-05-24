@@ -1,7 +1,8 @@
 #include "Game.h"
 #include "TextureManager.h"
-#include "SDLGameObject.h"
 #include "InputHandler.h"
+#include "MenuState.h"
+#include "PlayState.h"
 
 Game* Game::s_pInstance = 0;
 
@@ -31,7 +32,7 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, bo
             {
                 DEBUG("renderer creation success");
                 SDL_SetRenderDrawColor(m_pRenderer,
-                255, 0, 0, 255);
+                0, 0, 0, 255);
             }
             else
             {
@@ -58,12 +59,10 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, bo
         return false;
     }
 
-    m_gameObjects.push_back(new Player(new LoaderParams(100, 100, 128, 82, "animate")));
-    m_gameObjects.push_back(new Enemy(new LoaderParams(0, 0, 128, 82, "animate")));
-    m_gameObjects.push_back(new Enemy(new LoaderParams(200, 200, 128, 82, "animate")));
-    m_gameObjects.push_back(new Enemy(new LoaderParams(300, 300, 128, 82, "animate")));
-
     InputHandler::Instance()->initialiseJoysticks();
+
+    m_pGameStateMachine = new GameStateMachine();
+    m_pGameStateMachine->changeState(new MenuState());
 
     DEBUG("init success");
     m_bRunning = true; // everything inited successfully, start the main loop
@@ -75,11 +74,7 @@ void Game::render()
     // clear the window to black
     SDL_RenderClear(m_pRenderer);
 
-    for(std::vector<GameObject*>::size_type i = 0; i !=
-    m_gameObjects.size(); i++)
-    {
-        m_gameObjects[i]->draw();
-    }
+    m_pGameStateMachine->render();
 
     // show the window
     SDL_RenderPresent(m_pRenderer);
@@ -87,11 +82,7 @@ void Game::render()
 
 void Game::update()
 {
-    for(std::vector<GameObject*>::size_type i = 0; i !=
-    m_gameObjects.size(); i++)
-    {
-        m_gameObjects[i]->update();
-    }
+    m_pGameStateMachine->update();
 }
 
 void Game::handleEvents()

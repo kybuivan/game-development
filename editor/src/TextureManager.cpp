@@ -83,3 +83,8 @@ width, int height, int currentRow, int currentFrame, SDL_Renderer
     SDL_RenderCopyEx(pRenderer, m_textureMap[id], &srcRect,
     &destRect, 0, 0, flip);
 }
+
+void TextureManager::clearFromTextureMap(std::string id)
+{
+    m_textureMap.erase(id);
+}

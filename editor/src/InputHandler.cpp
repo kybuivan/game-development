@@ -1,7 +1,32 @@
 #include "InputHandler.h"
-#include "logging.h"
 #include "Game.h"
+#include "logging.h"
 InputHandler* InputHandler::s_pInstance = 0;
+
+InputHandler::InputHandler()
+    : m_keystates(0)
+    , m_bJoysticksInitialised(false)
+    , m_mousePosition(new Vector2D(0,0))
+{
+    // create button states for the mouse
+    for(int i = 0; i < 3; i++)
+    {
+        m_mouseButtonStates.push_back(false);
+    }
+}
+
+InputHandler::~InputHandler()
+{
+    // delete anything we created dynamically
+    delete m_keystates;
+    delete m_mousePosition;
+    
+    // clear our arrays
+    m_joystickValues.clear();
+    m_joysticks.clear();
+    m_buttonStates.clear();
+    m_mouseButtonStates.clear();
+}
 
 void InputHandler::initialiseJoysticks()
 {
@@ -41,14 +66,16 @@ void InputHandler::initialiseJoysticks()
         ERROR("Initialised joystick FALSE");
         m_bJoysticksInitialised = false;
     }
-    for(int i = 0; i < 3; i++)
-    {
-        m_mouseButtonStates.push_back(false);
-    }
-    m_mousePosition = new Vector2D(0, 0);
 }
 
-int InputHandler::xvalue(int joy, int stick)
+void InputHandler::reset()
+{
+    m_mouseButtonStates[LEFT] = false;
+    m_mouseButtonStates[RIGHT] = false;
+    m_mouseButtonStates[MIDDLE] = false;
+}
+
+int InputHandler::getAxisX(int joy, int stick) const
 {
     if(m_joystickValues.size() > 0)
     {
@@ -64,7 +91,7 @@ int InputHandler::xvalue(int joy, int stick)
     return 0;
 }
 
-int InputHandler::yvalue(int joy, int stick)
+int InputHandler::getAxisY(int joy, int stick) const
 {
     if(m_joystickValues.size() > 0)
     {
@@ -91,12 +118,26 @@ void InputHandler::clean()
     }
 }
 
+bool InputHandler::getButtonState(int joy, int buttonNumber) const
+{
+    return m_buttonStates[joy][buttonNumber];
+}
+
+bool InputHandler::getMouseButtonState(int buttonNumber) const
+{
+    return m_mouseButtonStates[buttonNumber];
+}
+
+Vector2D* InputHandler::getMousePosition() const
+{
+    return m_mousePosition;
+}
+
 void InputHandler::update()
 {
     SDL_Event event;
     while(SDL_PollEvent(&event))
     {
-        m_keystates = SDL_GetKeyboardState(0);
         switch(event.type)
         {
             case SDL_QUIT:
@@ -134,7 +175,7 @@ void InputHandler::update()
     }
 }
 
-bool InputHandler::isKeyDown(SDL_Scancode key)
+bool InputHandler::isKeyDown(SDL_Scancode key) const
 {
     if(m_keystates != 0)
     {
@@ -152,12 +193,12 @@ bool InputHandler::isKeyDown(SDL_Scancode key)
 
 void InputHandler::onKeyDown()
 {
-    DEBUG("onKeyDown");
+    m_keystates = SDL_GetKeyboardState(0);
 }
 
 void InputHandler::onKeyUp()
 {
-    DEBUG("onKeyUp");
+    m_keystates = SDL_GetKeyboardState(0);
 }
 
 void InputHandler::onMouseMove(SDL_Event& event)

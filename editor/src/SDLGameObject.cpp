@@ -15,12 +15,22 @@ SDLGameObject::SDLGameObject(const LoaderParams* pParams) :
 
     m_currentRow = 1;
     m_currentFrame = 1;
+
+    m_numFrames = 6;
 }
 
 void SDLGameObject::draw()
 {
-    TextureManager::Instance()->drawFrame(m_textureID, (int)m_position.getX(), (int)m_position.getY(),
-    m_width, m_height, m_currentRow, m_currentFrame, Game::Instance()->getRenderer());
+    if(m_velocity.getX() > 0)
+    {
+        TextureManager::Instance()->drawFrame(m_textureID, (Uint32)m_position.getX(), (Uint32)m_position.getY(),
+            m_width, m_height, m_currentRow, m_currentFrame, Game::Instance()->getRenderer(), SDL_FLIP_HORIZONTAL);
+    }
+    else
+    {
+        TextureManager::Instance()->drawFrame(m_textureID, (Uint32)m_position.getX(), (Uint32)m_position.getY(),
+            m_width, m_height, m_currentRow, m_currentFrame, Game::Instance()->getRenderer());
+    }
 }
 
 void SDLGameObject::update()
@@ -48,64 +58,15 @@ void Player::update()
     m_velocity.setY(0);
     handleInput(); // add our function
 
-    m_currentFrame = int(((SDL_GetTicks() / 100) % 6));
+    m_currentFrame = int(((SDL_GetTicks() / 100) % m_numFrames));
     SDLGameObject::update();
 }
 
 void Player::handleInput()
 {
-    if(InputHandler::Instance()->joysticksInitialised())
-    {
-        if(InputHandler::Instance()->xvalue(0, 1) > 0 || InputHandler::Instance()->xvalue(0, 1) < 0)
-        {
-            m_velocity.setX(1 * InputHandler::Instance()->xvalue(0, 1));
-        }
-        if(InputHandler::Instance()->yvalue(0, 1) > 0 || InputHandler::Instance()->yvalue(0, 1) < 0)
-        {
-            m_velocity.setY(1 * InputHandler::Instance()->yvalue(0, 1));
-        }
-        if(InputHandler::Instance()->xvalue(0, 2) > 0 || InputHandler::Instance()->xvalue(0, 2) < 0)
-        {
-            m_velocity.setX(1 * InputHandler::Instance()->xvalue(0, 2));
-        }
-        if(InputHandler::Instance()->yvalue(0, 2) > 0 || InputHandler::Instance()->yvalue(0, 2) < 0)
-        {
-            m_velocity.setY(1 * InputHandler::Instance()->yvalue(0, 2));
-        }
-
-        if(InputHandler::Instance()->getButtonState(0, 3))
-        {
-            m_velocity.setX(1);
-        }
-    }
-
-    if(InputHandler::Instance()->getMouseButtonState(LEFT))
-    {
-        m_velocity.setX(1);
-    }
-
-    //Vector2D* vec = InputHandler::Instance()->getMousePosition();
-    //m_velocity = (*vec - m_position) / 100;
-
-    if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_RIGHT))
-    {
-        m_velocity.setX(2);
-    }
-
-    if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_LEFT))
-    {
-        m_velocity.setX(-2);
-    }
-
-    if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_UP))
-    {
-        m_velocity.setY(-2);
-    }
-    
-    if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_DOWN))
-    {
-        m_velocity.setY(2);
-    }
+    Vector2D* target = InputHandler::Instance()->getMousePosition();
+    m_velocity = *target - m_position;
+    m_velocity /= 50;
 }
 
 void Player::clean()
@@ -115,6 +76,8 @@ void Player::clean()
 Enemy::Enemy(const LoaderParams* pParams) :
     SDLGameObject(pParams)
 {
+    m_velocity.setY(2);
+    m_velocity.setX(0.001);
 }
 
 void Enemy::draw()
@@ -124,11 +87,37 @@ void Enemy::draw()
 
 void Enemy::update()
 {
-    m_position.setX(m_position.getX() + 1);
-    m_position.setY(m_position.getY() + 1);
-    m_currentFrame = int(((SDL_GetTicks() / 100) % 6));
+    m_currentFrame = int(((SDL_GetTicks() / 100) % m_numFrames));
+    if(m_position.getY() < 0)
+    {
+        m_velocity.setY(2);
+    }
+    else if(m_position.getY() > 400)
+    {
+        m_velocity.setY(-2);
+    }
+    SDLGameObject::update();
 }
 
 void Enemy::clean()
+{
+}
+
+MenuObject::MenuObject(const LoaderParams* pParams) :
+    SDLGameObject(pParams)
+{
+}
+
+void MenuObject::draw()
+{
+    SDLGameObject::draw(); // we now use SDLGameObject
+}
+
+void MenuObject::update()
+{
+    m_currentFrame = int(((SDL_GetTicks() / 100) % m_numFrames));
+}
+
+void MenuObject::clean()
 {
 }
