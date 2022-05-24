@@ -1,8 +1,12 @@
 #include "Game.h"
 #include "TextureManager.h"
 #include "InputHandler.h"
-#include "MenuState.h"
+#include "MenuButton.h"
+#include "MainMenuState.h"
 #include "PlayState.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "AnimatedGraphic.h"
 
 Game* Game::s_pInstance = 0;
 
@@ -52,17 +56,15 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, bo
         return false; // SDL init fail
     }
 
-    // to load
-    if(!TextureManager::Instance()->load("assets/animate-alpha.png", "animate", m_pRenderer))
-    {
-        ERROR("load texture fail");
-        return false;
-    }
-
     InputHandler::Instance()->initialiseJoysticks();
 
+    GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());
+    GameObjectFactory::Instance()->registerType("Enemy", new EnemyCreator());
+	GameObjectFactory::Instance()->registerType("Player", new PlayerCreator());
+	GameObjectFactory::Instance()->registerType("AnimatedGraphic", new AnimatedGraphicCreator());
+
     m_pGameStateMachine = new GameStateMachine();
-    m_pGameStateMachine->changeState(new MenuState());
+    m_pGameStateMachine->changeState(new MainMenuState());
 
     DEBUG("init success");
     m_bRunning = true; // everything inited successfully, start the main loop

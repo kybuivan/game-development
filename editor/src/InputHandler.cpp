@@ -1,6 +1,7 @@
 #include "InputHandler.h"
 #include "Game.h"
 #include "logging.h"
+
 InputHandler* InputHandler::s_pInstance = 0;
 
 InputHandler::InputHandler()
@@ -141,7 +142,6 @@ void InputHandler::update()
         switch(event.type)
         {
             case SDL_QUIT:
-                DEBUG("SDL_QUIT");
                 Game::Instance()->quit();
                 break;
             case SDL_JOYAXISMOTION:
@@ -169,7 +169,6 @@ void InputHandler::update()
                 onKeyUp();
                 break;
             default:
-                DEBUG("event.type= {}", event.type);
                 break;
         }
     }
@@ -221,7 +220,6 @@ void InputHandler::onMouseButtonDown(SDL_Event& event)
     {
         m_mouseButtonStates[RIGHT] = true;
     }
-    
 }  
 
 void InputHandler::onMouseButtonUp(SDL_Event& event)
@@ -243,6 +241,7 @@ void InputHandler::onMouseButtonUp(SDL_Event& event)
 void InputHandler::onJoystickAxisMove(SDL_Event& event)
 {
     int whichOne = event.jaxis.which;
+
     // left stick move left or right
     if(event.jaxis.axis == 0)
     {
@@ -259,6 +258,7 @@ void InputHandler::onJoystickAxisMove(SDL_Event& event)
             m_joystickValues[whichOne].first->setX(0);
         }
     }
+
     // left stick move up or down
     if(event.jaxis.axis == 1)
     {
@@ -275,6 +275,7 @@ void InputHandler::onJoystickAxisMove(SDL_Event& event)
             m_joystickValues[whichOne].first->setY(0);
         }
     }
+
     // right stick move left or right
     if(event.jaxis.axis == 3)
     {
@@ -291,6 +292,7 @@ void InputHandler::onJoystickAxisMove(SDL_Event& event)
             m_joystickValues[whichOne].second->setX(0);
         }
     }
+
     // right stick move up or down
     if(event.jaxis.axis == 4)
     {
@@ -313,7 +315,6 @@ void InputHandler::onJoystickButtonDown(SDL_Event& event)
 {
     int whichOne = event.jaxis.which;
     m_buttonStates[whichOne][event.jbutton.button] = true;
-
 }
 
 void InputHandler::onJoystickButtonUp(SDL_Event& event)

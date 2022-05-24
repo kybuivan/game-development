@@ -42,7 +42,6 @@ class Game
     SDL_Window* m_pWindow = 0;
     SDL_Renderer* m_pRenderer = 0;
 
-
     //add an object of our GameStateMachine
     GameStateMachine* m_pGameStateMachine;
     bool m_bRunning;

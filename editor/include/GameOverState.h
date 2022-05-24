@@ -1,9 +1,9 @@
 #ifndef __GAME_OVER_STATE_H__
 #define __GAME_OVER_STATE_H__
-#include "GameState.h"
+#include "MenuState.h"
 class GameObject;
 
-class GameOverState : public GameState
+class GameOverState : public MenuState
 {
 public:
     virtual void update();
@@ -12,6 +12,8 @@ public:
     virtual bool onExit();
     virtual std::string getStateID() const { return s_gameOverID; }
 private:
+virtual void setCallbacks(const std::vector<Callback>& callbacks);
+
     static void s_gameOverToMain();
     static void s_restartPlay();
     
