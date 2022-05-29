@@ -78,8 +78,8 @@ private:
     std::vector<std::pair<Vector2D*, Vector2D*>> m_joystickValues;
     std::vector<std::vector<bool>> m_buttonStates;
     bool m_bJoysticksInitialised;
-    const int m_joystickDeadZone = 10000;
-
+    static const int m_joystickDeadZone = 10000;
+    
     // mouse specific
     std::vector<bool> m_mouseButtonStates;
     Vector2D* m_mousePosition;

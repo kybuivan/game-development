@@ -1,11 +1,15 @@
 #ifndef __MAIN_MENU_STATE_H__
 #define __MAIN_MENU_STATE_H__
+#include <vector>
 #include "MenuState.h"
 #include "GameObject.h"
 
 class MainMenuState : public MenuState
 {
 public:
+    
+    virtual ~MainMenuState() {}
+
     virtual void update();
     virtual void render();
     virtual bool onEnter();

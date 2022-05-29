@@ -2,10 +2,9 @@
 #define __COLLISION_MANAGER_H__
 
 #include <vector>
-
-class Player;
-class GameObject;
-class TileLayer;
+#include "Player.h"
+#include "GameObject.h"
+#include "TileLayer.h"
 
 class CollisionManager
 {

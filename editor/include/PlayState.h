@@ -1,13 +1,20 @@
 #ifndef __PLAY_STATE_H__
 #define __PLAY_STATE_H__
 #include "GameState.h"
+#include "CollisionManager.h"
 #include "Level.h"
+#include <vector>
+
 class GameObject;
 class SDLGameObject;
+class Level;
 
 class PlayState : public GameState
 {
 public:
+    
+    virtual ~PlayState() { delete pLevel; }
+    
     virtual void update();
     virtual void render();
 
@@ -16,9 +23,13 @@ public:
 
     virtual std::string getStateID() const { return s_playID; }
 private:
-    bool checkCollision(SDLGameObject* p1, SDLGameObject* p2);
+    
     static const std::string s_playID;
-    Level* m_pLevel;
+    
+    CollisionManager m_collisionManager;
+    
     std::vector<GameObject*> m_gameObjects;
+    
+    Level* pLevel;
 };
 #endif //__PLAY_STATE_H__

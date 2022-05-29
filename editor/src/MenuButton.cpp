@@ -1,14 +1,13 @@
 #include "MenuButton.h"
 #include "InputHandler.h"
 
-MenuButton::MenuButton() : SDLGameObject()
+MenuButton::MenuButton() : ShooterObject(), m_callback(0), m_bReleased(true)
 {
-    m_currentFrame = MOUSE_OUT; // start at frame 0
 }
 
 void MenuButton::draw()
 {
-    SDLGameObject::draw(); // use the base class drawing
+    ShooterObject::draw(); // use the base class drawing
 }
 
 void MenuButton::update()
@@ -23,8 +22,12 @@ void MenuButton::update()
         if(InputHandler::Instance()->getMouseButtonState(LEFT) && m_bReleased)
         {
             m_currentFrame = CLICKED;
-
-            m_callback(); // call our callback function
+            
+            if(m_callback != 0)
+            {
+            	m_callback(); // call our callback function
+            }
+            
             m_bReleased = false;
         }
         else if(!InputHandler::Instance()->getMouseButtonState(LEFT))
@@ -39,14 +42,14 @@ void MenuButton::update()
     }
 }
 
-void MenuButton::load(const LoaderParams *pParams)
+void MenuButton::load(std::unique_ptr<LoaderParams> const &pParams)
 {
-    SDLGameObject::load(pParams);
+    ShooterObject::load(std::move(pParams));
     m_callbackID = pParams->getCallbackID();
     m_currentFrame = MOUSE_OUT;
 }
 
 void MenuButton::clean()
 {
-    SDLGameObject::clean();
+    ShooterObject::clean();
 }

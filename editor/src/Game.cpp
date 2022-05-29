@@ -3,17 +3,51 @@
 #include "InputHandler.h"
 #include "MenuButton.h"
 #include "MainMenuState.h"
-#include "PlayState.h"
+#include "GameObjectFactory.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "AnimatedGraphic.h"
+#include "ScrollingBackground.h"
+#include "SoundManager.h"
+#include "RoofTurret.h"
+#include "ShotGlider.h"
+#include "Eskeletor.h"
+#include "Level1Boss.h"
+#include "GameOverState.h"
 
 Game* Game::s_pInstance = 0;
+
+Game::Game():
+m_pWindow(0),
+m_pRenderer(0),
+m_bRunning(false),
+m_pGameStateMachine(0),
+m_playerLives(3),
+m_scrollSpeed(0.8),
+m_bLevelComplete(false),
+m_bChangingState(false)
+{
+    // add some level files to an array
+    m_levelFiles.push_back("assets/map1.tmx");
+    m_levelFiles.push_back("assets/map2.tmx");
+    
+    // start at this level
+    m_currentLevel = 1;
+}
+
+Game::~Game()
+{
+    // we must clean up after ourselves to prevent memory leaks
+    m_pRenderer= 0;
+    m_pWindow = 0;
+}
 
 bool Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
     logconsoler.Init();
     int flags = 0;
+    m_gameWidth = width;
+	m_gameHeight = height;
 
     if(fullscreen)
     {
@@ -56,21 +90,40 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         return false; // SDL init fail
     }
 
-	m_gameWidth = width;
-	m_gameHeight = height;
-    InputHandler::Instance()->initialiseJoysticks();
+    // add some sound effects - TODO move to better place
+    SoundManager::Instance()->load("assets/DST_ElectroRock.ogg", "music1", SOUND_MUSIC);
+    SoundManager::Instance()->load("assets/boom.wav", "explode", SOUND_SFX);
+    SoundManager::Instance()->load("assets/phaser.wav", "shoot", SOUND_SFX);
+    
+    SoundManager::Instance()->playMusic("music1", -1);
+    //InputHandler::Instance()->initialiseJoysticks();
 
     GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());
-    GameObjectFactory::Instance()->registerType("Enemy", new EnemyCreator());
+    //GameObjectFactory::Instance()->registerType("Enemy", new EnemyCreator());
+    GameObjectFactory::Instance()->registerType("ScrollingBackground", new ScrollingBackgroundCreator());
 	GameObjectFactory::Instance()->registerType("Player", new PlayerCreator());
 	GameObjectFactory::Instance()->registerType("AnimatedGraphic", new AnimatedGraphicCreator());
-
+	GameObjectFactory::Instance()->registerType("Turret", new TurretCreator());
+    GameObjectFactory::Instance()->registerType("Glider", new GliderCreator());
+    GameObjectFactory::Instance()->registerType("ShotGlider", new ShotGliderCreator());
+    GameObjectFactory::Instance()->registerType("RoofTurret", new RoofTurretCreator());
+    GameObjectFactory::Instance()->registerType("Eskeletor", new EskeletorCreator());
+    GameObjectFactory::Instance()->registerType("Level1Boss", new Level1BossCreator());
+    
+    // start the menu state
     m_pGameStateMachine = new GameStateMachine();
     m_pGameStateMachine->changeState(new MainMenuState());
 
     DEBUG("init success");
     m_bRunning = true; // everything inited successfully, start the main loop
     return true;
+}
+
+void Game::setCurrentLevel(int currentLevel)
+{
+    m_currentLevel = currentLevel;
+    m_pGameStateMachine->changeState(new GameOverState());
+    m_bLevelComplete = false;
 }
 
 void Game::render()
@@ -97,6 +150,11 @@ void Game::handleEvents()
 void Game::clean()
 {
     DEBUG("cleaning game");
+    InputHandler::Instance()->clean();
+    m_pGameStateMachine->clean();
+    m_pGameStateMachine = 0;
+    delete m_pGameStateMachine;
+    TextureManager::Instance()->clearTextureMap();
     SDL_DestroyWindow(m_pWindow);
     SDL_DestroyRenderer(m_pRenderer);
     SDL_Quit();

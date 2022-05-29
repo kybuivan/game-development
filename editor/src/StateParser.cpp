@@ -41,6 +41,7 @@ bool StateParser::parseState(const char *stateFile, std::string stateID, std::ve
     for (auto e = pStateRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) {
         if (e->Value() == std::string("OBJECTS")) {
             pObjectsRoot = e;
+			break;
         }
     }
 
@@ -49,14 +50,14 @@ bool StateParser::parseState(const char *stateFile, std::string stateID, std::ve
     return true;
 }
 
-void StateParser::parseTextures(tinyxml2::XMLElement *pStateRoot, std::vector<std::string> *textures) {
+void StateParser::parseTextures(tinyxml2::XMLElement *pStateRoot, std::vector<std::string> *pTextureIDs) {
     for (auto e = pStateRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) {
-        std::string filename = e->Attribute("filename");
+        std::string filenameAttribute = e->Attribute("filename");
         std::string idAttribute = e->Attribute("ID");
 
-        textures->push_back(idAttribute);
+        pTextureIDs->push_back(idAttribute);
 
-        TextureManager::Instance()->load(filename, idAttribute, Game::Instance()->getRenderer());
+        TextureManager::Instance()->load(filenameAttribute, idAttribute, Game::Instance()->getRenderer());
     }
 }
 
@@ -77,7 +78,7 @@ void StateParser::parseObjects(tinyxml2::XMLElement *pStateRoot, std::vector<Gam
 
         GameObject* pGameObject = GameObjectFactory::Instance()->create(e->Attribute("type"));
 
-        pGameObject->load(new LoaderParams(x, y, width, height, textureID, numFrames, callbackID, animateSpeed));
+        pGameObject->load(std::unique_ptr<LoaderParams>(new LoaderParams(x, y, width, height, textureID, numFrames, callbackID, animateSpeed)));
 
         pObjects->push_back(pGameObject);
     }

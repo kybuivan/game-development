@@ -6,6 +6,7 @@
 #include "MainMenuState.h"
 #include "MenuButton.h"
 #include "AnimatedGraphic.h"
+#include "InputHandler.h"
 #include "StateParser.h"
 
 const std::string GameOverState::s_gameOverID = "GAMEOVER";
@@ -21,23 +22,29 @@ void GameOverState::s_restartPlay()
 
 void GameOverState::update()
 {
-    for(int i = 0; i < m_gameObjects.size(); i++)
+    if(m_loadingComplete && !m_gameObjects.empty())
     {
-        m_gameObjects[i]->update();
+        for(int i = 0; i < m_gameObjects.size(); i++)
+        {
+            m_gameObjects[i]->update();
+        }
     }
 }
 void GameOverState::render()
 {
-    for(int i = 0; i < m_gameObjects.size(); i++)
+    if(m_loadingComplete && !m_gameObjects.empty())
     {
-        m_gameObjects[i]->draw();
+        for(int i = 0; i < m_gameObjects.size(); i++)
+        {
+            m_gameObjects[i]->draw();
+        }
     }
 }
 bool GameOverState::onEnter()
 {
     // parse the state
 	StateParser stateParser;
-	stateParser.parseState("assets/test.xml", s_gameOverID, &m_gameObjects, &m_textureIDList);
+	stateParser.parseState("assets/attack.xml", s_gameOverID, &m_gameObjects, &m_textureIDList);
 	m_callbacks.push_back(0);
 	m_callbacks.push_back(s_gameOverToMain);
 	m_callbacks.push_back(s_restartPlay);
@@ -55,6 +62,7 @@ bool GameOverState::onExit()
         for(int i = 0; i < m_gameObjects.size(); i++)
         {
             m_gameObjects[i]->clean();
+            delete m_gameObjects[i];
         }
         
         m_gameObjects.clear();
@@ -66,6 +74,8 @@ bool GameOverState::onExit()
 		TextureManager::Instance()->clearFromTextureMap(m_textureIDList[i]);
     }
 
+    InputHandler::Instance()->reset();
+    
     DEBUG("exiting GameOverState");
     return true;
 }

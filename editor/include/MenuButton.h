@@ -1,13 +1,17 @@
 #ifndef __MENU_BUTTON_H__
 #define __MENU_BUTTON_H__
-#include "SDLGameObject.h"
+#include "ShooterObject.h"
 #include "GameObjectFactory.h"
 
-class MenuButton : public SDLGameObject
+class MenuButton : public ShooterObject
 {
 public:
     MenuButton();
-    virtual void load(const LoaderParams *pParams);
+    
+    virtual ~MenuButton() {}
+    
+    virtual void load(std::unique_ptr<LoaderParams> const &pParams);
+    
     virtual void draw();
     virtual void update();
     virtual void clean();

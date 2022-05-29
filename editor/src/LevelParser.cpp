@@ -60,12 +60,12 @@ Level* LevelParser::parseLevel(const char *levelFile)
         {
             if(e->FirstChildElement()->Value() == std::string("object"))
             {
-                parseObjectLayer(e, pLevel->getLayers());
+                parseObjectLayer(e, pLevel->getLayers(), pLevel);
             }
             else if(e->FirstChildElement()->Value() == std::string("data") ||
                     (e->FirstChildElement()->NextSiblingElement() != 0 && e->FirstChildElement()->NextSiblingElement()->Value() == std::string("data")))
             {
-                parseTileLayer(e, pLevel->getLayers(), pLevel->getTilesets());
+                parseTileLayer(e, pLevel->getLayers(), pLevel->getTilesets(), pLevel->getCollisionLayers());
             }
         }
     }
@@ -96,10 +96,12 @@ void LevelParser::parseTilesets(tinyxml2::XMLElement* pTilesetRoot, std::vector<
     pTilesets->push_back(tileset);
 }
 
-void LevelParser::parseTileLayer(tinyxml2::XMLElement* pTileElement, std::vector<Layer*> *pLayers, const std::vector<Tileset>* pTilesets)
+void LevelParser::parseTileLayer(tinyxml2::XMLElement* pTileElement, std::vector<Layer*> *pLayers, const std::vector<Tileset>* pTilesets, std::vector<TileLayer*> *pCollisionLayers)
 {
     TileLayer* pTileLayer = new TileLayer(m_tileSize, *pTilesets);
 	
+    bool collidable = false;
+    
 	// tile data
 	std::vector<std::vector<int>> data;
 	
@@ -108,6 +110,19 @@ void LevelParser::parseTileLayer(tinyxml2::XMLElement* pTileElement, std::vector
 	
 	for(tinyxml2::XMLElement* e = pTileElement->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
 	{
+		if(e->Value() == std::string("properties"))
+        {
+            for(tinyxml2::XMLElement* property = e->FirstChildElement(); property != NULL; property = property->NextSiblingElement())
+            {
+                if(property->Value() == std::string("property"))
+                {
+                    if(property->Attribute("name") == std::string("collidable"))
+                    {
+                        collidable = true;
+                    }
+                }
+            }
+        }
 		if(e->Value() == std::string("data"))
 		{
 			pDataNode = e;
@@ -158,6 +173,12 @@ void LevelParser::parseTileLayer(tinyxml2::XMLElement* pTileElement, std::vector
 
 
 	pTileLayer->setTileIDs(data);
+	pTileLayer->setMapWidth(m_width);
+    
+    if(collidable)
+    {
+        pCollisionLayers->push_back(pTileLayer);
+    }
 	
 	pLayers->push_back(pTileLayer);
 }
@@ -168,7 +189,7 @@ void LevelParser::parseTextures(tinyxml2::XMLElement* pTextureRoot)
     TextureManager::Instance()->load(pTextureRoot->Attribute("value"), pTextureRoot->Attribute("name"), Game::Instance()->getRenderer());
 }
 
-void LevelParser::parseObjectLayer(tinyxml2::XMLElement* pObjectElement, std::vector<Layer*> *pLayers)
+void LevelParser::parseObjectLayer(tinyxml2::XMLElement* pObjectElement, std::vector<Layer*> *pLayers, Level* pLevel)
 {
     // create an object layer
     ObjectLayer* pObjectLayer = new ObjectLayer();
@@ -177,7 +198,7 @@ void LevelParser::parseObjectLayer(tinyxml2::XMLElement* pObjectElement, std::ve
     {
         if(e->Value() == std::string("object"))
         {
-            int x, y, width, height, numFrames, callbackID = 0, animSpeed = 0;
+            int x, y, width, height, numFrames, callbackID = 0, animateSpeed = 0;
             std::string textureID;
             std::string type;
             
@@ -217,21 +238,21 @@ void LevelParser::parseObjectLayer(tinyxml2::XMLElement* pObjectElement, std::ve
                             {
                                 callbackID = property->IntAttribute("value");
                             }
-                            else if(e->Attribute("name") == std::string("animSpeed"))
+                            else if(e->Attribute("name") == std::string("animateSpeed"))
                             {
-                                animSpeed = property->IntAttribute("value");
+                                animateSpeed = property->IntAttribute("value");
                             }
                         }
                     }
                 }
             }
             //int x, int y, int width, int height, std::string textureID, int numFrames, void()
-            pGameObject->load(new LoaderParams(x, y, width, height, textureID, numFrames,callbackID, animSpeed));
+            pGameObject->load(std::unique_ptr<LoaderParams>(new LoaderParams(x, y, width, height, textureID, numFrames,callbackID, animateSpeed)));
             
-            // if(type == "Player")
-            // {
-            //     pLevel->setPlayer(dynamic_cast<Player*>(pGameObject));
-            // }
+            if(type == "Player")
+            {
+                pLevel->setPlayer(dynamic_cast<Player*>(pGameObject));
+            }
             
             pObjectLayer->getGameObjects()->push_back(pGameObject);
         }

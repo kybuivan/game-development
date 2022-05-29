@@ -11,10 +11,18 @@ TileLayer::TileLayer(int tileSize, const std::vector<Tileset>& tilesets) : m_til
 	m_numRows = (Game::Instance()->getGameHeight() / m_tileSize);
 }
 
-void TileLayer::update()
+void TileLayer::update(Level* pLevel)
 {
-	m_position += m_velocity;
-	m_velocity.setX(1);
+    if(m_position.getX() < ((m_mapWidth * m_tileSize) - Game::Instance()->getGameWidth()) - m_tileSize)
+    {
+        m_velocity.setX(Game::Instance()->getScrollSpeed());
+        m_position += m_velocity;
+
+    }
+    else
+    {
+        m_velocity.setX(0);
+    }
 }
 
 void TileLayer::render()
@@ -45,18 +53,10 @@ void TileLayer::render()
 			
 			id--;
 			
-			TextureManager::Instance()->drawTile(
-				tileset.name, 2, 2, 
-				(j * m_tileSize) - x2, (i * m_tileSize) - y2, 
-				m_tileSize, m_tileSize, 
-				(id - (tileset.firstGridID - 1)) / tileset.numColumns, 
-				(id - (tileset.firstGridID - 1 )) % tileset.numColumns, 
-				Game::Instance()->getRenderer());
+			TextureManager::Instance()->drawTile( tileset.name, tileset.margin, tileset.spacing, (j * m_tileSize) - x2, (i * m_tileSize) - y2,	m_tileSize, m_tileSize, (id - (tileset.firstGridID - 1)) / tileset.numColumns, (id - (tileset.firstGridID - 1 )) % tileset.numColumns, Game::Instance()->getRenderer());
 		}
 	}
 }
-
-
 
 Tileset TileLayer::getTilesetByID(int tileID)
 {
