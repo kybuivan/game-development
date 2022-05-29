@@ -16,6 +16,12 @@ id, SDL_Renderer* pRenderer)
     int req_format = STBI_rgb_alpha;
     unsigned char* data = stbi_load(fileName.c_str(), &w, &h, &comp, req_format);
     
+    if(data == nullptr)
+    {
+        ERROR("load texture is failed: {}", fileName);
+        return false;
+    }
+    
     int depth, pitch;
     Uint32 pixel_format;
     if (req_format == STBI_rgb) {
@@ -82,6 +88,20 @@ width, int height, int currentRow, int currentFrame, SDL_Renderer
     destRect.y = y;
     SDL_RenderCopyEx(pRenderer, m_textureMap[id], &srcRect,
     &destRect, 0, 0, flip);
+}
+
+void TextureManager::drawTile(std::string id, int margin, int spacing, int x, int y, int width, int height, int currentRow, int currentFrame, SDL_Renderer *pRenderer)
+{
+	SDL_Rect srcRect;
+	SDL_Rect destRect;
+	srcRect.x = margin + (spacing + width) * currentFrame;
+	srcRect.y = margin + (spacing + height) * currentRow;
+	srcRect.w = destRect.w = width;
+	srcRect.h = destRect.h = height;
+	destRect.x = x;
+	destRect.y = y;
+	
+	SDL_RenderCopyEx(pRenderer, m_textureMap[id], &srcRect, &destRect, 0, 0, SDL_FLIP_NONE);
 }
 
 void TextureManager::clearFromTextureMap(std::string id)

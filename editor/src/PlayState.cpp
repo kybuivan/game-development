@@ -6,6 +6,8 @@
 #include "PauseState.h"
 #include "GameOverState.h"
 #include "StateParser.h"
+#include "LevelParser.h"
+#include "Level.h"
 
 const std::string PlayState::s_playID = "PLAY";
 
@@ -15,28 +17,17 @@ void PlayState::update()
     {
         Game::Instance()->getStateMachine()->pushState(new PauseState());
     }
+	m_pLevel->update();
 
-    for(int i = 0; i < m_gameObjects.size(); i++)
-    {
-        m_gameObjects[i]->update();
-    }
-
-    if(checkCollision(dynamic_cast<SDLGameObject*> (m_gameObjects[0]), dynamic_cast<SDLGameObject*> (m_gameObjects[1])))
-    {
-        Game::Instance()->getStateMachine()->pushState(new GameOverState());
-    }
 }
 void PlayState::render()
 {
-    for(int i = 0; i < m_gameObjects.size(); i++)
-    {
-        m_gameObjects[i]->draw();
-    }
+    m_pLevel->render();
 }
 bool PlayState::onEnter()
 {
-    StateParser stateParser;
-	stateParser.parseState("../assets/test.xml", s_playID, &m_gameObjects, &m_textureIDList);
+    LevelParser levelParser;
+	m_pLevel = levelParser.parseLevel("assets/map1.tmx");
 
     DEBUG("entering PlayState");
     return true;

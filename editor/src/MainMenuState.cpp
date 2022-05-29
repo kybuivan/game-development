@@ -29,7 +29,7 @@ bool MainMenuState::onEnter()
 {
     // parse the state
     StateParser stateParser;
-    stateParser.parseState("../assets/test.xml", s_menuID, &m_gameObjects, &m_textureIDList);
+    stateParser.parseState("assets/test.xml", s_menuID, &m_gameObjects, &m_textureIDList);
     m_callbacks.push_back(0); //pushback 0 callbackID start from 1
     m_callbacks.push_back(s_menuToPlay);
     m_callbacks.push_back(s_exitFromMenu);
@@ -60,7 +60,13 @@ bool MainMenuState::onExit()
         m_gameObjects[i]->clean();
     }
     m_gameObjects.clear();
-    TextureManager::Instance()->clearFromTextureMap("playbutton");
+    
+	// clear the texture manager
+	for(int i = 0; i < m_textureIDList.size(); i++)
+	{
+		TextureManager::Instance()->clearFromTextureMap(m_textureIDList[i]);
+	}
+	
     TextureManager::Instance()->clearFromTextureMap("exitbutton");
     DEBUG("exiting MenuState");
     return true;

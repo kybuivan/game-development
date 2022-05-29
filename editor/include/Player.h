@@ -19,6 +19,7 @@ private:
 
 class PlayerCreator : public BaseCreator
 {
+public:	
     GameObject* createGameObject() const
     {
         return new Player();

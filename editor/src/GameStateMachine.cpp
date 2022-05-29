@@ -1,5 +1,4 @@
 #include "GameStateMachine.h"
-#include <iostream>
 
 void GameStateMachine::clean()
 {

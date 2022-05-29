@@ -21,7 +21,7 @@ class Game
     }
     ~Game() {}
     // simply set the running variable to true
-    bool init(const char* title, int xpos, int ypos, int height, int width, bool fullscreen);
+    bool init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);
 
     void render();
     void update();
@@ -33,6 +33,10 @@ class Game
     SDL_Renderer* getRenderer() const { return m_pRenderer; }
     
     GameStateMachine* getStateMachine(){ return m_pGameStateMachine; }
+	
+	int getGameWidth() const { return m_gameWidth; }
+	
+	int getGameHeight() const { return m_gameHeight; }
     
     private:
     Game(){}
@@ -45,6 +49,8 @@ class Game
     //add an object of our GameStateMachine
     GameStateMachine* m_pGameStateMachine;
     bool m_bRunning;
+	int m_gameWidth;
+	int m_gameHeight;
     LogManager logconsoler;
 };
 #endif //__GAME_H__

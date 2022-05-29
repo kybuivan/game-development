@@ -9,7 +9,7 @@ bool StateParser::parseState(const char *stateFile, std::string stateID, std::ve
     tinyxml2::XMLDocument xmlDoc;
 
     if (xmlDoc.LoadFile(stateFile) != tinyxml2::XML_SUCCESS) {
-        ERROR("Error: {}", xmlDoc.ErrorStr());
+        ERROR(xmlDoc.ErrorStr());
         return false;
     }
 

@@ -1,6 +1,5 @@
 #ifndef __STATE_PARSER_H__
 #define __STATE_PARSER_H__
-#include <iostream>
 #include <vector>
 #include "tinyxml2.h"
 class GameObject;

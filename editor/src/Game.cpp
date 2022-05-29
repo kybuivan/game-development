@@ -10,7 +10,7 @@
 
 Game* Game::s_pInstance = 0;
 
-bool Game::init(const char* title, int xpos, int ypos, int height, int width, bool fullscreen)
+bool Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
     logconsoler.Init();
     int flags = 0;
@@ -25,7 +25,7 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, bo
     {
         DEBUG("SDL init success");
         // if succeeded create our window
-        m_pWindow = SDL_CreateWindow(title, xpos, ypos, height, width, flags);
+        m_pWindow = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
         // if the window creation succeeded create our renderer
         if(m_pWindow != 0)
         {
@@ -56,6 +56,8 @@ bool Game::init(const char* title, int xpos, int ypos, int height, int width, bo
         return false; // SDL init fail
     }
 
+	m_gameWidth = width;
+	m_gameHeight = height;
     InputHandler::Instance()->initialiseJoysticks();
 
     GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());
