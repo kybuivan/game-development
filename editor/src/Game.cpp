@@ -14,6 +14,7 @@
 #include "Eskeletor.h"
 #include "Level1Boss.h"
 #include "GameOverState.h"
+#include "SoundBuffer.h"
 
 Game* Game::s_pInstance = 0;
 
@@ -28,8 +29,8 @@ m_bLevelComplete(false),
 m_bChangingState(false)
 {
     // add some level files to an array
-    m_levelFiles.push_back("assets/map1.tmx");
-    m_levelFiles.push_back("assets/map2.tmx");
+    m_levelFiles.push_back("../assets/map1.tmx");
+    m_levelFiles.push_back("../assets/map2.tmx");
     
     // start at this level
     m_currentLevel = 1;
@@ -42,7 +43,7 @@ Game::~Game()
     m_pWindow = 0;
 }
 
-bool Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
+bool Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)  noexcept
 {
     logconsoler.Init();
     int flags = 0;
@@ -91,11 +92,12 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     }
 
     // add some sound effects - TODO move to better place
-    SoundManager::Instance()->load("assets/DST_ElectroRock.ogg", "music1", SOUND_MUSIC);
-    SoundManager::Instance()->load("assets/boom.wav", "explode", SOUND_SFX);
-    SoundManager::Instance()->load("assets/phaser.wav", "shoot", SOUND_SFX);
+    SoundManager::Instance()->load("../assets/DST_ElectroRock.ogg", "music1");
+    SoundManager::Instance()->load("../assets/boom.wav", "explode");
+    SoundManager::Instance()->load("../assets/phaser.wav", "shoot");
     
-    SoundManager::Instance()->playMusic("music1", -1);
+    SoundManager::Instance()->playSound("music1");
+
     //InputHandler::Instance()->initialiseJoysticks();
 
     GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());

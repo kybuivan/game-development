@@ -75,7 +75,7 @@ Level* LevelParser::parseLevel(const char *levelFile)
 
 void LevelParser::parseTilesets(tinyxml2::XMLElement* pTilesetRoot, std::vector<Tileset>* pTilesets)
 {
-	std::string assetsTag = "assets/";
+	std::string assetsTag = "../assets/";
     // first add the tileset to texture manager
     DEBUG("adding texture {}  with ID {}", pTilesetRoot->FirstChildElement()->Attribute("source"), pTilesetRoot->Attribute("name"));
 	TextureManager::Instance()->load(assetsTag.append(pTilesetRoot->FirstChildElement()->Attribute("source")), pTilesetRoot->Attribute("name"), Game::Instance()->getRenderer());

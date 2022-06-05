@@ -22,7 +22,7 @@ class Game
     }
     
     // simply set the running variable to true
-    bool init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);
+    bool init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)  noexcept;
 
     void render();
     void update();

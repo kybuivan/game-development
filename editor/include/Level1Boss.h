@@ -40,7 +40,7 @@ public:
                 {
                     m_position.setX(m_position.getX() + 30);
                     m_position.setY(m_position.getY() + 70);
-                    SoundManager::Instance()->playSound("explode", 0);
+                    SoundManager::Instance()->playSound("explode");
                     
                     m_textureID = "bossexplosion";
                     m_currentFrame = 0;
