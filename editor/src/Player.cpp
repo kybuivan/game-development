@@ -201,7 +201,7 @@ void Player::handleInput()
         {
             if(m_bulletCounter == m_bulletFiringSpeed)
             {
-                SoundManager::Instance()->playSound("shoot", 0);
+                SoundManager::Instance()->playSound("shoot");
                 BulletHandler::Instance()->addPlayerBullet(m_position.getX() + 90, m_position.getY() + 12, 11, 11, "bullet1", 1, Vector2D(10,0));
                 m_bulletCounter = 0;
             }

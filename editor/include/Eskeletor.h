@@ -25,7 +25,7 @@ public:
         {
             if(!m_bPlayedDeathSound)
             {
-                SoundManager::Instance()->playSound("explode", 0);
+                SoundManager::Instance()->playSound("explode");
                 
                 m_textureID = "largeexplosion";
                 m_currentFrame = 0;

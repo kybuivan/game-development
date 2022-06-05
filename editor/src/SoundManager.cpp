@@ -5,51 +5,68 @@ SoundManager* SoundManager::s_pInstance = 0;
 
 SoundManager::SoundManager()
 {
-    //Mix_OpenAudio(22050, AUDIO_S16, 2, (4096 / 2));
+    DEBUG("SoundManager instance");
+    
+    p_ALCDevice = alcOpenDevice(NULL); // nullptr = get default device
+	if (p_ALCDevice == nullptr)
+    {
+        ERROR("Failed to get sound device");
+    }
+
+	p_ALCContext = alcCreateContext(p_ALCDevice, NULL);  // create context
+	if(p_ALCContext == nullptr)
+    {
+        ERROR("Failed to set sound context");
+    }
+
+	if (!alcMakeContextCurrent(p_ALCContext))   // make context current
+    {
+        ERROR("Failed to make context current");
+    }
+
+	const ALCchar* name = nullptr;
+	if (alcIsExtensionPresent(p_ALCDevice, "ALC_ENUMERATE_ALL_EXT"))
+		name = alcGetString(p_ALCDevice, ALC_ALL_DEVICES_SPECIFIER);
+	if (!name || alcGetError(p_ALCDevice) != AL_NO_ERROR)
+		name = alcGetString(p_ALCDevice, ALC_DEVICE_SPECIFIER);
+	DEBUG("Opened \"{}\"", name);
 }
 
 SoundManager::~SoundManager()
 {
-    //Mix_CloseAudio();
-}
-
-bool SoundManager::load(std::string fileName, std::string id, sound_type type)
-{
-    if(type == SOUND_MUSIC)
+    if (!alcMakeContextCurrent(nullptr))
     {
-        //Mix_Music* pMusic = Mix_LoadMUS(fileName.c_str());
-        //if(pMusic == 0)
-        {
-            //ERROR("Could not load music: ERROR - {}", Mix_GetError());
-            ERROR("Could not load music");
-            return false;
-        }
-        
-        //m_music[id] = pMusic;
-        return true;
+        ERROR("failed to set context to nullptr");
     }
-    else if(type == SOUND_SFX)
+
+	alcDestroyContext(p_ALCContext);
+	if (p_ALCContext)
     {
-        //Mix_Chunk* pChunk = Mix_LoadWAV(fileName.c_str());
-        //if(pChunk == 0)
-        {
-            //ERROR("Could not load SFX: ERROR - {}", Mix_GetError());
-            ERROR("Could not load SFX");
-            return false;
-        }
-        
-        //m_sfxs[id] = pChunk;
-        return true;
+        ERROR("failed to unset during close");
     }
-    return false;
+
+	if (!alcCloseDevice(p_ALCDevice))
+    {
+        ERROR("failed to close sound device");
+    }
 }
 
-void SoundManager::playMusic(std::string id, int loop)
+bool SoundManager::load(char const* fileName, std::string id)
 {
-    //Mix_PlayMusic(m_music[id], loop);
+    DEBUG("SoundManager load filename: {}, id={}", fileName, id);
+	uint32_t /*ALuint*/ sound1 = SoundBuffer::Instance()->addSoundEffect(fileName);
+
+    if(sound1 == NULL)
+    {
+        return false;
+    }
+    m_sfxs[id] = sound1;
+    return true;
 }
 
-void SoundManager::playSound(std::string id, int loop)
+void SoundManager::playSound(std::string id)
 {
-    //Mix_PlayChannel(-1, m_sfxs[id], loop);
+    SoundSource mySpeaker;
+
+	mySpeaker.Play(m_sfxs[id]);
 }

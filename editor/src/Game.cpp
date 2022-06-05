@@ -14,6 +14,7 @@
 #include "Eskeletor.h"
 #include "Level1Boss.h"
 #include "GameOverState.h"
+#include "SoundBuffer.h"
 
 Game* Game::s_pInstance = 0;
 
@@ -91,11 +92,12 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     }
 
     // add some sound effects - TODO move to better place
-    SoundManager::Instance()->load("assets/DST_ElectroRock.ogg", "music1", SOUND_MUSIC);
-    SoundManager::Instance()->load("assets/boom.wav", "explode", SOUND_SFX);
-    SoundManager::Instance()->load("assets/phaser.wav", "shoot", SOUND_SFX);
+    SoundManager::Instance()->load("assets/DST_ElectroRock.ogg", "music1");
+    SoundManager::Instance()->load("assets/boom.wav", "explode");
+    SoundManager::Instance()->load("assets/phaser.wav", "shoot");
     
-    SoundManager::Instance()->playMusic("music1", -1);
+    SoundManager::Instance()->playSound("music1");
+
     //InputHandler::Instance()->initialiseJoysticks();
 
     GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());

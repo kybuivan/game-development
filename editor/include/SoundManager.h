@@ -4,13 +4,10 @@
 #include <iostream>
 #include <map>
 #include <string>
-//#include "SDL_mixer.h"
-
-enum sound_type
-{
-    SOUND_MUSIC = 0,
-    SOUND_SFX = 1
-};
+//#include "SoundDevice.h"
+#include "SoundBuffer.h"
+#include "SoundSource.h"
+#include "AL/alc.h"
 
 class SoundManager
 {
@@ -26,21 +23,20 @@ public:
         return s_pInstance;
     }
     
-    bool load(std::string fileName, std::string id, sound_type type);
+    bool load(char const* fileName, std::string id);
     
-    void playSound(std::string id, int loop);
-    void playMusic(std::string id, int loop);
+    void playSound( std::string id);
     
 private:
-    
+
     static SoundManager* s_pInstance;
-    
-    //std::map<std::string, Mix_Chunk*> m_sfxs;
-    //std::map<std::string, Mix_Music*> m_music;
-    
+    //SoundDevice * p_SoundDevice;
+
     SoundManager();
     ~SoundManager();
-    
+    std::map< std::string, ALuint> m_sfxs;
+    ALCdevice * p_ALCDevice;
+	ALCcontext * p_ALCContext;
     SoundManager(const SoundManager&);
 	SoundManager& operator=(const SoundManager&);
 };
