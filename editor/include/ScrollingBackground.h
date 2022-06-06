@@ -1,9 +1,9 @@
 #ifndef __SCROLLING_BACKGROUND_H__
 #define __SCROLLING_BACKGROUND_H__
 #include "GameObjectFactory.h"
-#include "ShooterObject.h"
+#include "PlatformerObject.h"
 
-class ScrollingBackground : public ShooterObject
+class ScrollingBackground : public PlatformerObject
 {
 public:
     
@@ -40,7 +40,7 @@ class ScrollingBackgroundCreator : public BaseCreator
 {
 public:
     
-    virtual GameObject* createGameObject() const
+    GameObject* createGameObject() const
     {
         return new ScrollingBackground();
     }

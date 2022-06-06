@@ -2,7 +2,7 @@
 #include "TextureManager.h"
 #include "Game.h"
 
-ScrollingBackground::ScrollingBackground() : ShooterObject()
+ScrollingBackground::ScrollingBackground() : PlatformerObject()
 {
     count = 0;
     maxcount = 10;
@@ -10,23 +10,23 @@ ScrollingBackground::ScrollingBackground() : ShooterObject()
 
 void ScrollingBackground::load(std::unique_ptr<LoaderParams> const &pParams)
 {
-    ShooterObject::load(std::move(pParams));
+    PlatformerObject::load(std::move(pParams));
     m_scrollSpeed = pParams->getAnimateSpeed();
     
     m_scrollSpeed = 1;
     
     m_srcRect1.x = 0;
-    m_destRect1.x = m_position.getX();
+    m_destRect1.x = m_position.m_x;
     m_srcRect1.y = 0;
-    m_destRect1.y = m_position.getY();
+    m_destRect1.y = m_position.m_y;
     
     m_srcRect1.w = m_destRect1.w = m_srcRect2Width = m_destRect1Width = m_width;
     m_srcRect1.h = m_destRect1.h = m_height;
     
     m_srcRect2.x = 0;
-    m_destRect2.x = m_position.getX() + m_width;
+    m_destRect2.x = m_position.m_x + m_width;
     m_srcRect2.y = 0;
-    m_destRect2.y = m_position.getY();
+    m_destRect2.y = m_position.m_y;
     
     m_srcRect2.w = m_destRect2.w = m_srcRect2Width = m_destRect2Width = 0;
     m_srcRect2.h = m_destRect2.h = m_height;
@@ -60,17 +60,17 @@ void ScrollingBackground::update()
         if(m_destRect2.w >= m_width)
         {
             m_srcRect1.x = 0;
-            m_destRect1.x = m_position.getX();
+            m_destRect1.x = m_position.m_x;
             m_srcRect1.y = 0;
-            m_destRect1.y = m_position.getY();
+            m_destRect1.y = m_position.m_y;
             
             m_srcRect1.w = m_destRect1.w = m_srcRect2Width = m_destRect1Width = m_width;
             m_srcRect1.h = m_destRect1.h = m_height;
             
             m_srcRect2.x = 0;
-            m_destRect2.x = m_position.getX() + m_width;
+            m_destRect2.x = m_position.m_x + m_width;
             m_srcRect2.y = 0;
-            m_destRect2.y = m_position.getY();
+            m_destRect2.y = m_position.m_y;
             
             m_srcRect2.w = m_destRect2.w = m_srcRect2Width = m_destRect2Width = 0;
             m_srcRect2.h = m_destRect2.h = m_height;
@@ -83,5 +83,5 @@ void ScrollingBackground::update()
 
 void ScrollingBackground::clean()
 {
-    ShooterObject::clean();
+    PlatformerObject::clean();
 }

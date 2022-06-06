@@ -52,7 +52,6 @@ Level* LevelParser::parseLevel(const char *levelFile)
             parseTilesets(e, pLevel->getTilesets());
         }
     }
-    
     // parse any object layers
     for(tinyxml2::XMLElement* e = pRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
     {
@@ -70,6 +69,8 @@ Level* LevelParser::parseLevel(const char *levelFile)
         }
     }
     
+	// set the players collision layer
+    //pLevel->getPlayer()->setCollisionLayers(pLevel->getCollisionLayers());
     return pLevel;
 }
 
@@ -98,7 +99,7 @@ void LevelParser::parseTilesets(tinyxml2::XMLElement* pTilesetRoot, std::vector<
 
 void LevelParser::parseTileLayer(tinyxml2::XMLElement* pTileElement, std::vector<Layer*> *pLayers, const std::vector<Tileset>* pTilesets, std::vector<TileLayer*> *pCollisionLayers)
 {
-    TileLayer* pTileLayer = new TileLayer(m_tileSize, *pTilesets);
+    TileLayer* pTileLayer = new TileLayer(m_tileSize, m_width, m_height, *pTilesets);
 	
     bool collidable = false;
     
@@ -173,7 +174,7 @@ void LevelParser::parseTileLayer(tinyxml2::XMLElement* pTileElement, std::vector
 
 
 	pTileLayer->setTileIDs(data);
-	pTileLayer->setMapWidth(m_width);
+	//pTileLayer->setMapWidth(m_width);
     
     if(collidable)
     {
@@ -247,8 +248,12 @@ void LevelParser::parseObjectLayer(tinyxml2::XMLElement* pObjectElement, std::ve
                 }
             }
             //int x, int y, int width, int height, std::string textureID, int numFrames, void()
+            //pGameObject->load(std::unique_ptr<LoaderParams>(new LoaderParams(x, y, width, height, textureID, numFrames,callbackID, animateSpeed)));
+            // load the object
             pGameObject->load(std::unique_ptr<LoaderParams>(new LoaderParams(x, y, width, height, textureID, numFrames,callbackID, animateSpeed)));
-            
+            // set the collision layers
+            pGameObject->setCollisionLayers(pLevel->getCollisionLayers());
+
             if(type == "Player")
             {
                 pLevel->setPlayer(dynamic_cast<Player*>(pGameObject));

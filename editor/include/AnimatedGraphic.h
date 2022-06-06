@@ -1,9 +1,9 @@
 #ifndef __ANIMATED_GRAPHIC_H__
 #define __ANIMATED_GRAPHIC_H__
-#include "ShooterObject.h"
 #include "GameObjectFactory.h"
+#include "PlatformerObject.h"
 
-class AnimatedGraphic : public ShooterObject
+class AnimatedGraphic : public PlatformerObject
 {
 public:
 	AnimatedGraphic();
@@ -21,7 +21,7 @@ private:
 class AnimatedGraphicCreator : public BaseCreator
 {
 public:
-	virtual GameObject* createGameObject() const
+	GameObject* createGameObject() const
 	{
 		return new AnimatedGraphic();
 	}

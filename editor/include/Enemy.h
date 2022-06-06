@@ -1,9 +1,9 @@
 #ifndef __ENEMY_H__
 #define __ENEMY_H__
-#include "ShooterObject.h"
+#include "PlatformerObject.h"
 
 // Enemy base class
-class Enemy : public ShooterObject
+class Enemy : public PlatformerObject
 {
 public:
     
@@ -13,7 +13,7 @@ protected:
     
     int m_health;
     
-    Enemy() : ShooterObject() {}
+    Enemy() : PlatformerObject() {}
     virtual ~Enemy() {}
 };
 

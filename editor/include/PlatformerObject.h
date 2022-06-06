@@ -1,15 +1,14 @@
-#ifndef __SHOOTER_OBJECT_H__
-#define __SHOOTER_OBJECT_H__
+#ifndef __PLATFORMER_OBJETCT_H__
+#define __PLATFORMER_OBJETCT_H__
 
-#include <SDL.h>
 #include "GameObject.h"
-#include "Vector2D.h"
+#include <SDL.h>
 
-class ShooterObject : public GameObject
+class PlatformerObject : public GameObject
 {
 public:
     
-    virtual ~ShooterObject() {}
+    virtual ~PlatformerObject() {}
 
     virtual void load(std::unique_ptr<LoaderParams> const &pParams);
     
@@ -23,8 +22,10 @@ public:
     
 protected:
     
-    ShooterObject();
+    PlatformerObject();
     
+    bool checkCollideTile(Vector2D newPos);
+       
     void doDyingAnimation();
     
     int m_bulletFiringSpeed;
@@ -37,6 +38,20 @@ protected:
     
     // has the explosion sound played?
     bool m_bPlayedDeathSound;
+    
+    bool m_bFlipped;
+    
+    bool m_bMoveLeft;
+    bool m_bMoveRight;
+    bool m_bRunning;
+    
+    bool m_bFalling;
+    bool m_bJumping;
+    bool m_bCanJump;
+    
+    Vector2D m_lastSafePos;
+    
+    int m_jumpHeight;
 };
 
-#endif //__SHOOTER_OBJECT_H__
+#endif //__PLATFORMER_OBJETCT_H__

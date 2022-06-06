@@ -4,6 +4,8 @@
 #include "Vector2D.h"
 #include <string>
 #include <memory>
+#include <vector>
+class TileLayer;
 
 class GameObject
 {
@@ -39,10 +41,10 @@ public:
     // scroll along with tile map
     void scroll(float scrollSpeed)
     {
-        if(type() != std::string("Player")) // player is never scrolled
-        {
-            m_position.setX(m_position.getX() - scrollSpeed);
-        }
+//        if(type() != std::string("Player")) // player is never scrolled
+//        {
+//            m_position.setX(m_position.getX() - scrollSpeed);
+//        }
     }
     
     // is the object currently being updated?
@@ -56,7 +58,9 @@ public:
     
     // set whether to update the object or not
     void setUpdating(bool updating) { m_bUpdating = updating; }
-        
+    
+    void setCollisionLayers(std::vector<TileLayer*>* layers) { m_pCollisionLayers = layers; }
+
 protected:
     
     // constructor with default initialisation list
@@ -67,6 +71,7 @@ protected:
                     m_height(0),
                     m_currentRow(0),
                     m_currentFrame(0),
+                    m_numFrames(0),
                     m_bUpdating(false),
                     m_bDead(false),
                     m_bDying(false),
@@ -100,5 +105,7 @@ protected:
     
     // blending
     int m_alpha;
+
+    std::vector<TileLayer*>* m_pCollisionLayers;
 };
 #endif //__GAME_OBJECT_H__

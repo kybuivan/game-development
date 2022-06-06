@@ -8,7 +8,7 @@
 #include "StateParser.h"
 #include "LevelParser.h"
 #include "Level.h"
-#include "BulletHandler.h"
+//#include "BulletHandler.h"
 
 const std::string PlayState::s_playID = "PLAY";
 
@@ -21,7 +21,7 @@ void PlayState::update()
 	        Game::Instance()->getStateMachine()->pushState(new PauseState());
 	    }
 		
-		BulletHandler::Instance()->updateBullets();
+		//BulletHandler::Instance()->updateBullets();
         
         if(Game::Instance()->getPlayerLives() == 0)
         {
@@ -47,7 +47,7 @@ void PlayState::render()
             TextureManager::Instance()->drawFrame("lives", i * 30, 0, 32, 30, 0, 0, Game::Instance()->getRenderer(), 0.0, 255);
         }
         
-        BulletHandler::Instance()->drawBullets();
+        //BulletHandler::Instance()->drawBullets();
     }
 }
 bool PlayState::onEnter()
@@ -56,11 +56,6 @@ bool PlayState::onEnter()
     
     LevelParser levelParser;
     pLevel = levelParser.parseLevel(Game::Instance()->getLevelFiles()[Game::Instance()->getCurrentLevel() - 1].c_str());
-    
-    TextureManager::Instance()->load("assets/bullet1.png", "bullet1", Game::Instance()->getRenderer());
-    TextureManager::Instance()->load("assets/bullet2.png", "bullet2", Game::Instance()->getRenderer());
-    TextureManager::Instance()->load("assets/bullet3.png", "bullet3", Game::Instance()->getRenderer());
-    TextureManager::Instance()->load("assets/lives.png", "lives", Game::Instance()->getRenderer());
     
     if(pLevel != 0)
     {
@@ -76,7 +71,6 @@ bool PlayState::onExit()
     m_exiting = true;
     
     InputHandler::Instance()->reset();
-	BulletHandler::Instance()->clearBullets();
 
     DEBUG("exiting PlayState");
     return true;

@@ -1,9 +1,9 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
-#include "ShooterObject.h"
+#include "PlatformerObject.h"
 #include "GameObjectFactory.h"
 
-class Player : public ShooterObject
+class Player : public PlatformerObject
 {
 public:
     Player();
@@ -28,11 +28,15 @@ private:
     
     // handle any animation for the player
     void handleAnimation();
+    
+    void handleMovement(Vector2D velocity);
 
     // player can be invulnerable for a time
     int m_invulnerable;
     int m_invulnerableTime;
     int m_invulnerableCounter;
+
+    bool m_bPressedJump;
 };
 
 // for the factory

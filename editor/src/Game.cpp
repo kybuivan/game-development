@@ -5,16 +5,17 @@
 #include "MainMenuState.h"
 #include "GameObjectFactory.h"
 #include "Player.h"
-#include "Enemy.h"
+//#include "Enemy.h"
 #include "AnimatedGraphic.h"
 #include "ScrollingBackground.h"
 #include "SoundManager.h"
-#include "RoofTurret.h"
-#include "ShotGlider.h"
-#include "Eskeletor.h"
-#include "Level1Boss.h"
+//#include "RoofTurret.h"
+//#include "ShotGlider.h"
+//#include "Eskeletor.h"
+//#include "Level1Boss.h"
 #include "GameOverState.h"
 #include "SoundBuffer.h"
+#include "Snail.h"
 
 Game* Game::s_pInstance = 0;
 
@@ -24,13 +25,10 @@ m_pRenderer(0),
 m_bRunning(false),
 m_pGameStateMachine(0),
 m_playerLives(3),
-m_scrollSpeed(0.8),
-m_bLevelComplete(false),
-m_bChangingState(false)
+m_bLevelComplete(false)
 {
     // add some level files to an array
     m_levelFiles.push_back("assets/map1.tmx");
-    m_levelFiles.push_back("assets/map2.tmx");
     
     // start at this level
     m_currentLevel = 1;
@@ -65,13 +63,12 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         if(m_pWindow != 0)
         {
             DEBUG("window creation success");
-            m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, 0);
+            m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, SDL_RENDERER_ACCELERATED);
 
             if(m_pRenderer != 0) // renderer init success
             {
                 DEBUG("renderer creation success");
-                SDL_SetRenderDrawColor(m_pRenderer,
-                0, 0, 0, 255);
+                SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
             }
             else
             {
@@ -93,8 +90,9 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
     // add some sound effects - TODO move to better place
     SoundManager::Instance()->load("assets/DST_ElectroRock.ogg", "music1");
-    SoundManager::Instance()->load("assets/boom.wav", "explode");
-    SoundManager::Instance()->load("assets/phaser.wav", "shoot");
+    //SoundManager::Instance()->load("assets/boom.wav", "explode");
+    //SoundManager::Instance()->load("assets/phaser.wav", "shoot");
+	SoundManager::Instance()->load("assets/jump.wav", "jump");
     
     SoundManager::Instance()->playSound("music1");
 
@@ -105,12 +103,13 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     GameObjectFactory::Instance()->registerType("ScrollingBackground", new ScrollingBackgroundCreator());
 	GameObjectFactory::Instance()->registerType("Player", new PlayerCreator());
 	GameObjectFactory::Instance()->registerType("AnimatedGraphic", new AnimatedGraphicCreator());
-	GameObjectFactory::Instance()->registerType("Turret", new TurretCreator());
-    GameObjectFactory::Instance()->registerType("Glider", new GliderCreator());
-    GameObjectFactory::Instance()->registerType("ShotGlider", new ShotGliderCreator());
-    GameObjectFactory::Instance()->registerType("RoofTurret", new RoofTurretCreator());
-    GameObjectFactory::Instance()->registerType("Eskeletor", new EskeletorCreator());
-    GameObjectFactory::Instance()->registerType("Level1Boss", new Level1BossCreator());
+	GameObjectFactory::Instance()->registerType("Snail", new SnailCreator());
+	//GameObjectFactory::Instance()->registerType("Turret", new TurretCreator());
+    //GameObjectFactory::Instance()->registerType("Glider", new GliderCreator());
+    //GameObjectFactory::Instance()->registerType("ShotGlider", new ShotGliderCreator());
+    //GameObjectFactory::Instance()->registerType("RoofTurret", new RoofTurretCreator());
+    //GameObjectFactory::Instance()->registerType("Eskeletor", new EskeletorCreator());
+    //GameObjectFactory::Instance()->registerType("Level1Boss", new Level1BossCreator());
     
     // start the menu state
     m_pGameStateMachine = new GameStateMachine();

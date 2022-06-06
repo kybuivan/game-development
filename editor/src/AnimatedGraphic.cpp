@@ -1,13 +1,13 @@
 #include "AnimatedGraphic.h"
 
 //constructor for AnimatedGraphic class
-AnimatedGraphic::AnimatedGraphic() : ShooterObject()
+AnimatedGraphic::AnimatedGraphic() : PlatformerObject()
 {
 }
 
 void AnimatedGraphic::draw()
 {
-	ShooterObject::draw();
+	PlatformerObject::draw();
 }
 
 //update function of animated graphic class
@@ -19,11 +19,11 @@ void AnimatedGraphic::update()
 
 void AnimatedGraphic::clean()
 {
-	ShooterObject::clean();
+	PlatformerObject::clean();
 }
 
 void AnimatedGraphic::load(std::unique_ptr<LoaderParams> const &pParams)
 {
-	ShooterObject::load(pParams);
+	PlatformerObject::load(pParams);
 	m_animateSpeed = pParams->getAnimateSpeed();
 }

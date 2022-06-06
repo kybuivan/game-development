@@ -1,9 +1,9 @@
 #ifndef __MENU_BUTTON_H__
 #define __MENU_BUTTON_H__
-#include "ShooterObject.h"
+#include "PlatformerObject.h"
 #include "GameObjectFactory.h"
 
-class MenuButton : public ShooterObject
+class MenuButton : public PlatformerObject
 {
 public:
     MenuButton();

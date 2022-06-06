@@ -2,28 +2,31 @@
 #include "Game.h"
 #include "InputHandler.h"
 #include "TileLayer.h"
-#include "BulletHandler.h"
 #include "SoundManager.h"
+#include "Camera.h"
+#include "TextureManager.h"
 
 using namespace std;
 
-Player::Player() :  ShooterObject(),
+Player::Player() :  PlatformerObject(),
 m_invulnerable(false),
 m_invulnerableTime(200),
-m_invulnerableCounter(0)
+m_invulnerableCounter(0),
+m_bPressedJump(false)
 {
+    m_jumpHeight = 80;
 }
 
 void Player::collision()
 {
     // if the player is not invulnerable then set to dying and change values for death animation tile sheet
-    if(!m_invulnerable && !Game::Instance()->getLevelComplete())
+    if(!m_invulnerable && !m_bDying)
     {
-        m_textureID = "largeexplosion";
+        //m_textureID = "largeexplosion";
         m_currentFrame = 0;
+        m_currentRow = 4;
         m_numFrames = 9;
-        m_width = 60;
-        m_height = 60;
+        m_width = 50;
         m_bDying = true;
     }
 }
@@ -31,7 +34,7 @@ void Player::collision()
 void Player::load(std::unique_ptr<LoaderParams> const &pParams)
 {
     // inherited load function
-    ShooterObject::load(std::move(pParams));
+    PlatformerObject::load(std::move(pParams));
     
     // can set up the players inherited values here
     
@@ -44,12 +47,22 @@ void Player::load(std::unique_ptr<LoaderParams> const &pParams)
     
     // time it takes for death explosion
     m_dyingTime = 100;
+    
+    Camera::Instance()->setTarget(&m_position);
 }
 
 void Player::draw()
 {
-    // player has no special drawing requirements
-    ShooterObject::draw();
+    if(m_bFlipped)
+    {
+        TextureManager::Instance()->drawFrame(m_textureID, (Uint32)m_position.getX() -  Camera::Instance()->getPosition().m_x, (Uint32)m_position.getY() -  Camera::Instance()->getPosition().m_y,
+                                              m_width, m_height, m_currentRow, m_currentFrame, Game::Instance()->getRenderer(), m_angle, m_alpha, SDL_FLIP_HORIZONTAL);
+    }
+    else
+    {
+        TextureManager::Instance()->drawFrame(m_textureID, (Uint32)m_position.getX() -  Camera::Instance()->getPosition().m_x, (Uint32)m_position.getY() -  Camera::Instance()->getPosition().m_y,
+                                              m_width, m_height, m_currentRow, m_currentFrame, Game::Instance()->getRenderer(), m_angle, m_alpha);
+    }
 }
 
 void Player::handleAnimation()
@@ -81,72 +94,181 @@ void Player::handleAnimation()
     }
     
     // if the player is not dead then we can change the angle with the velocity to give the impression of a moving helicopter
-    if(!m_bDead)
+    if(!m_bDead && !m_bDying)
     {
-        if(m_velocity.getX() < 0)
+        if(m_velocity.m_y < 0)
         {
-            m_angle = -10.0;
+            m_currentFrame = 2;
+            m_currentRow = 2;
+            m_numFrames = 2;
         }
-        else if(m_velocity.getX() > 0)
+        else if(m_velocity.m_y > 0)
         {
-            m_angle = 10.0;
+            m_currentRow = 3;
+            m_numFrames = 1;
         }
         else
         {
-            m_angle = 0.0;
+            if(m_velocity.getX() < 0)
+            {
+                m_currentRow = 1;
+                m_numFrames = 4;
+                m_bFlipped = true;
+            }
+            else if(m_velocity.getX() > 0)
+            {
+                m_currentRow = 1;
+                m_numFrames = 4;
+                m_bFlipped = false;
+            }
+            else
+            {
+                m_currentRow = 0;
+                m_numFrames = 1;
+            }
         }
+        
+        if(m_bRunning)
+        {
+            m_currentFrame = int(((SDL_GetTicks() / (100)) % m_numFrames));
+        }
+        else
+        {
+            m_currentFrame = int(((SDL_GetTicks() / (120)) % m_numFrames));
+        }
+
     }
-    
-    // our standard animation code - for helicopter propellors
-    m_currentFrame = int(((SDL_GetTicks() / (100)) % m_numFrames));
+    else
+    {
+        m_currentFrame = m_dyingCounter / m_numFrames;//int(((SDL_GetTicks() / (200)) % m_numFrames));
+    }
 }
 
 void Player::update()
 {
-    if(Game::Instance()->getLevelComplete())
+    if(!m_bDying)
     {
-        if(m_position.getX() >= Game::Instance()->getGameWidth())
+        if(m_position.m_y + m_height >= 470)
         {
-            Game::Instance()->setCurrentLevel(Game::Instance()->getCurrentLevel() + 1);
+            collision();
+        }
+        
+        handleInput();
+        
+        if(m_bMoveLeft)
+        {
+            if(m_bRunning)
+            {
+                m_velocity.m_x = -5;
+            }
+            else
+            {
+                m_velocity.m_x = -2;
+            }
+        }
+        else if(m_bMoveRight)
+        {
+            if(m_bRunning)
+            {
+                m_velocity.m_x = 5;
+            }
+            else
+            {
+                m_velocity.m_x = 2;
+            }
         }
         else
         {
-            m_velocity.setY(0);
-            m_velocity.setX(3);
-            ShooterObject::update();
-            handleAnimation();
+            m_velocity.m_x = 0;
         }
+        
+        if(m_position.m_y < m_lastSafePos.m_y - m_jumpHeight)
+        {
+            m_bJumping = false;
+        }
+        
+        if(!m_bJumping)
+        {
+            m_velocity.m_y = 5;
+        }
+        else
+        {
+            m_velocity.m_y = -5;
+        }
+        
+         handleMovement(m_velocity);
     }
     else
     {
-        // if the player is not doing its death animation then update it normally
-        if(!m_bDying)
+        m_velocity.m_x = 0;
+        if(m_dyingCounter == m_dyingTime)
         {
-            // reset velocity
-            m_velocity.setX(0);
-            m_velocity.setY(0);
-            
-            // get input
-            handleInput();
-            
-            // do normal position += velocity update
-            ShooterObject::update();
-            
-            // update the animation
-            handleAnimation();
+            ressurect();
         }
-        else // if the player is doing the death animation
+        m_dyingCounter++;
+        
+        m_velocity.m_y = 5;
+    }
+    handleAnimation();
+}
+
+void Player::handleMovement(Vector2D velocity)
+{
+    // get the current position
+    Vector2D newPos = m_position;
+    
+    // add velocity to the x position
+    newPos.m_x  = m_position.m_x + velocity.m_x;
+    
+    // check if the new x position would collide with a tile
+    if(!checkCollideTile(newPos))
+    {
+        // no collision, add to the actual x position
+        m_position.m_x = newPos.m_x;
+    }
+    else
+    {
+        // collision, stop x movement
+        m_velocity.m_x = 0;
+    }
+    
+    // get the current position after x movement
+    newPos = m_position;
+    
+    // add velocity to y position
+    newPos.m_y += velocity.m_y;
+    
+    // check if new y position would collide with a tile
+    if(!checkCollideTile(newPos))
+    {
+        // no collision, add to the actual x position
+        m_position.m_y = newPos.m_y;
+    }
+    else
+    {
+        // collision, stop y movement
+        m_velocity.m_y = 0;
+        
+        //  we collided with the map which means we are safe on the ground,
+        //  make this the last safe position
+        m_lastSafePos = m_position;
+        
+        // move the safe pos slightly back or forward so when resurrected we are safely on the ground after a fall
+        if(velocity.m_x > 0)
         {
-            m_currentFrame = int(((SDL_GetTicks() / (100)) % m_numFrames));
-            
-            // if the death animation has completed
-            if(m_dyingCounter == m_dyingTime)
-            {
-                // ressurect the player
-                ressurect();
-            }
-            m_dyingCounter++;
+            m_lastSafePos.m_x -= 32;
         }
+        else if(velocity.m_x < 0)
+        {
+            m_lastSafePos.m_x += 32;
+            
+        }
+        
+        // allow the player to jump again
+        m_bCanJump = true;
+        
+        // jumping is now false
+        m_bJumping = false;
     }
 }
 
@@ -154,16 +276,12 @@ void Player::ressurect()
 {
     Game::Instance()->setPlayerLives(Game::Instance()->getPlayerLives() - 1);
     
-    m_position.setX(10);
-    m_position.setY(200);
+    m_position = m_lastSafePos;
     m_bDying = false;
     
-    m_textureID = "player";
-    
     m_currentFrame = 0;
-    m_numFrames = 5;
-    m_width = 101;
-    m_height = 46;
+    m_currentRow = 0;
+    m_width = 40;
     
     m_dyingCounter = 0;
     m_invulnerable = true;
@@ -171,79 +289,59 @@ void Player::ressurect()
 
 void Player::clean()
 {
-    ShooterObject::clean();
+    PlatformerObject::clean();
 }
 
 void Player::handleInput()
 {
-    if(!m_bDead)
+    if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_RIGHT) && m_position.m_x < ((*m_pCollisionLayers->begin())->getMapWidth() * 32))
     {
-        // handle keys
-        if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_UP) && m_position.getY() > 0)
+        if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_A))
         {
-            m_velocity.setY(-m_moveSpeed);
-        }
-        else if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_DOWN) && (m_position.getY() + m_height) < Game::Instance()->getGameHeight() - 10)
-        {
-            m_velocity.setY(m_moveSpeed);
-        }
-        
-        if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_LEFT) && m_position.getX() > 0)
-        {
-            m_velocity.setX(-m_moveSpeed);
-        }
-        else if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_RIGHT) && (m_position.getX() + m_width) < Game::Instance()->getGameWidth())
-        {
-            m_velocity.setX(m_moveSpeed);
-        }
-        
-        if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_SPACE))
-        {
-            if(m_bulletCounter == m_bulletFiringSpeed)
-            {
-                SoundManager::Instance()->playSound("shoot");
-                BulletHandler::Instance()->addPlayerBullet(m_position.getX() + 90, m_position.getY() + 12, 11, 11, "bullet1", 1, Vector2D(10,0));
-                m_bulletCounter = 0;
-            }
-            
-            m_bulletCounter++;
+            m_bRunning = true;
         }
         else
         {
-            m_bulletCounter = m_bulletFiringSpeed;
+            m_bRunning = false;
         }
-        // */
         
-        /* handle joysticks /
-        if(InputHandler::Instance()->joysticksInitialised())
+        m_bMoveRight = true;
+        m_bMoveLeft = false;
+    }
+    else if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_LEFT) && m_position.m_x > 32)
+    {
+        if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_A))
         {
-            if(InputHandler::Instance()->getButtonState(0, 2))
-            {
-                if(m_bulletCounter == m_bulletFiringSpeed)
-                {
-                    SoundManager::Instance()->playSound("shoot", 0);
-                    BulletHandler::Instance()->addPlayerBullet(m_position.getX() + 90, m_position.getY() + 12, 11, 11, "bullet1", 1, Vector2D(10,0));
-                    m_bulletCounter = 0;
-                }
-                
-                m_bulletCounter++;
-            }
-            else
-            {
-                m_bulletCounter = m_bulletFiringSpeed;
-            }
-            
-            if((InputHandler::Instance()->getAxisX(0, 1) > 0 && (m_position.getX() + m_width) < Game::Instance()->getGameWidth()) || (InputHandler::Instance()->getAxisX(0, 1) < 0 && m_position.getX() > 0))
-            {
-                m_velocity.setX(m_moveSpeed * InputHandler::Instance()->getAxisX(0, 1));
-            }
-            
-            if((InputHandler::Instance()->getAxisY(0, 1) > 0 && (m_position.getY() + m_height) < Game::Instance()->getGameHeight() - 10 ) || (InputHandler::Instance()->getAxisY(0, 1) < 0 && m_position.getY() > 0))
-            {
-                m_velocity.setY(m_moveSpeed * InputHandler::Instance()->getAxisY(0, 1));
-            }
+            m_bRunning = true;
         }
-        //*/
+        else
+        {
+            m_bRunning = false;
+        }
         
+        m_bMoveRight = false;
+        m_bMoveLeft = true;
+    }
+    else
+    {
+        m_bMoveRight = false;
+        m_bMoveLeft = false;
+    }
+    
+    if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_SPACE) && m_bCanJump && !m_bPressedJump)
+    {
+        SoundManager::Instance()->playSound("jump");
+        if(!m_bPressedJump)
+        {
+            m_bJumping = true;
+            m_bCanJump = false;
+            m_lastSafePos = m_position;
+            m_bPressedJump = true;
+        }
+    }
+    
+    if(!InputHandler::Instance()->isKeyDown(SDL_SCANCODE_SPACE) && m_bCanJump)
+    {
+        m_bPressedJump = false;
     }
 }

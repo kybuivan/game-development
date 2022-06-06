@@ -66,9 +66,9 @@ public:
         (*this) *= 1 / l;
         }
     }
-private:
     float m_x;
     float m_y;
+private:
 };
 
 #endif //__VECTOR_2D_H__
