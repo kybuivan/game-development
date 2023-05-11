@@ -6,4 +6,4 @@ include(openal)
 include(sndfile)
 
 add_module()
-target_link_libraries(editor PUBLIC core stb SDL2 SDL2main tinyxml2 OpenAL sndfile) 
+target_link_libraries(editor PUBLIC core stb SDL2-static SDL2main tinyxml2 OpenAL sndfile) 

@@ -1,8 +1,8 @@
 #ifndef __LEVEL_1_BOSS_H__
 #define __LEVEL_1_BOSS_H__
 
-#include "Enemy.h"
-#include "Game.h"
+#include <Enemy.h>
+#include <Game.h>
 
 class Level1Boss : public Enemy
 {
@@ -58,7 +58,7 @@ public:
     {
         if(!m_entered)
         {
-            scroll(Game::Instance()->getScrollSpeed());
+            //scroll(Game::Instance()->getScrollSpeed());
             
             if(m_position.getX() < (Game::Instance()->getGameWidth() - (m_width + 20)))
             {
@@ -95,7 +95,7 @@ public:
             }
             else
             {
-                scroll(Game::Instance()->getScrollSpeed());
+                //scroll(Game::Instance()->getScrollSpeed());
                 m_currentFrame = int(((SDL_GetTicks() / (1000 / 3)) % m_numFrames));
                 
                 if(m_dyingCounter == m_dyingTime)

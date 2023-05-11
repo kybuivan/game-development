@@ -50,11 +50,7 @@ class Game
 	int getGameWidth() const { return m_gameWidth; }
 	int getGameHeight() const { return m_gameHeight; }
     
-    float getScrollSpeed() { return m_scrollSpeed; }
-
-	bool changingState() { return m_bChangingState; }
-	void changingState(bool cs) { m_bChangingState = cs; }
-    
+    void setLevelFiles(std::vector<std::string> levelFilles) { m_levelFiles = levelFilles; }
     std::vector<std::string> getLevelFiles() { return m_levelFiles; }
 
     private:
@@ -63,7 +59,6 @@ class Game
 	Game& operator=(const Game&);
 	~Game();
     // create the s_pInstance member variable
-    bool m_bChangingState;
     static Game* s_pInstance;
 
     SDL_Window* m_pWindow = 0;
@@ -76,8 +71,6 @@ class Game
 	int m_gameHeight;
     LogManager logconsoler;
 
-    float m_scrollSpeed;
-    
     int m_playerLives;
     
     int m_currentLevel;

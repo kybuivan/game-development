@@ -1,7 +1,7 @@
 #ifndef __ESKELETOR_H__
 #define __ESKELETOR_H__
 
-#include "Enemy.h"
+#include <Enemy.h>
 
 class Eskeletor : public Enemy
 {
@@ -42,7 +42,7 @@ public:
     {
         if(!m_bDying)
         {
-            scroll(Game::Instance()->getScrollSpeed());
+            //scroll(Game::Instance()->getScrollSpeed());
             m_velocity.setY(m_moveSpeed);
             
             if(m_bulletCounter == m_bulletFiringSpeed)

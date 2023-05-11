@@ -2,8 +2,8 @@
 #define __SHOOTER_OBJECT_H__
 
 #include <SDL.h>
+#include <Vector2D.h>
 #include "GameObject.h"
-#include "Vector2D.h"
 
 class ShooterObject : public GameObject
 {

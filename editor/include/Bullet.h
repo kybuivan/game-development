@@ -1,10 +1,10 @@
 #ifndef __BULLET_H__
 #define __BULLET_H__
 
-#include "ShooterObject.h"
+#include <Vector2D.h>
 #include "TextureManager.h"
 #include "Game.h"
-#include "Vector2D.h"
+#include "ShooterObject.h"
 
 class PlayerBullet : public ShooterObject
 {

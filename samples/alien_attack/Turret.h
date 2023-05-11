@@ -2,11 +2,11 @@
 #define __TURRET_H__
 
 #include <iostream>
-#include "GameObjectFactory.h"
-#include "BulletHandler.h"
-#include "SoundManager.h"
 #include <math.h>
-#include "Enemy.h"
+#include <GameObjectFactory.h>
+#include <BulletHandler.h>
+#include <SoundManager.h>
+#include <Enemy.h>
 
 class Turret : public Enemy
 {
@@ -47,7 +47,7 @@ public:
         if(!m_bDying)
         {
             // we want to scroll this object with the rest
-            scroll(Game::Instance()->getScrollSpeed());
+            //scroll(Game::Instance()->getScrollSpeed());
             
             if(m_bulletCounter == m_bulletFiringSpeed)
             {
@@ -61,7 +61,7 @@ public:
         }
         else
         {
-            scroll(Game::Instance()->getScrollSpeed());
+            //scroll(Game::Instance()->getScrollSpeed());
             doDyingAnimation();
         }
         

@@ -20,7 +20,7 @@ public:
         if(!m_bDying)
         {
             // we want to scroll this object with the rest
-            scroll(Game::Instance()->getScrollSpeed());
+            //scroll(Game::Instance()->getScrollSpeed());
             
             if(m_bulletCounter == m_bulletFiringSpeed)
             {
@@ -34,7 +34,7 @@ public:
         }
         else
         {
-            scroll(Game::Instance()->getScrollSpeed());
+            //scroll(Game::Instance()->getScrollSpeed());
             doDyingAnimation();
         }
     }
