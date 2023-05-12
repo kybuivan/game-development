@@ -43,9 +43,9 @@ int main(int argc, char* args[])
     GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());
     //GameObjectFactory::Instance()->registerType("Enemy", new EnemyCreator());
     GameObjectFactory::Instance()->registerType("ScrollingBackground", new ScrollingBackgroundCreator());
-	GameObjectFactory::Instance()->registerType("Player", new PlayerCreator());
-	GameObjectFactory::Instance()->registerType("AnimatedGraphic", new AnimatedGraphicCreator());
-	GameObjectFactory::Instance()->registerType("Turret", new TurretCreator());
+    GameObjectFactory::Instance()->registerType("Player", new PlayerCreator());
+    GameObjectFactory::Instance()->registerType("AnimatedGraphic", new AnimatedGraphicCreator());
+    GameObjectFactory::Instance()->registerType("Turret", new TurretCreator());
     GameObjectFactory::Instance()->registerType("Glider", new GliderCreator());
     GameObjectFactory::Instance()->registerType("ShotGlider", new ShotGliderCreator());
     GameObjectFactory::Instance()->registerType("RoofTurret", new RoofTurretCreator());

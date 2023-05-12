@@ -51,7 +51,7 @@ private:
     ~InputHandler();
     
     InputHandler(const InputHandler&);
-	InputHandler& operator=(const InputHandler&);
+    InputHandler& operator=(const InputHandler&);
 
     // private functions to handle different event types
     // handle keyboard events

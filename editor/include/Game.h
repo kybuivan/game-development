@@ -34,7 +34,7 @@ class Game
     SDL_Renderer* getRenderer() const { return m_pRenderer; }
     SDL_Window* getWindow() const { return m_pWindow; }
     GameStateMachine* getStateMachine(){ return m_pGameStateMachine; }
-	
+    
     void setPlayerLives(int lives) { m_playerLives = lives; }
     int getPlayerLives() { return m_playerLives; }
     
@@ -47,17 +47,17 @@ class Game
     void setLevelComplete(bool levelComplete) { m_bLevelComplete = levelComplete; }
     const bool getLevelComplete() { return m_bLevelComplete; }
 
-	int getGameWidth() const { return m_gameWidth; }
-	int getGameHeight() const { return m_gameHeight; }
+    int getGameWidth() const { return m_gameWidth; }
+    int getGameHeight() const { return m_gameHeight; }
     
     void setLevelFiles(std::vector<std::string> levelFilles) { m_levelFiles = levelFilles; }
     std::vector<std::string> getLevelFiles() { return m_levelFiles; }
 
     private:
     Game();
-	Game(const Game&);
-	Game& operator=(const Game&);
-	~Game();
+    Game(const Game&);
+    Game& operator=(const Game&);
+    ~Game();
     // create the s_pInstance member variable
     static Game* s_pInstance;
 
@@ -67,8 +67,8 @@ class Game
     //add an object of our GameStateMachine
     GameStateMachine* m_pGameStateMachine;
     bool m_bRunning;
-	int m_gameWidth;
-	int m_gameHeight;
+    int m_gameWidth;
+    int m_gameHeight;
     LogManager logconsoler;
 
     int m_playerLives;

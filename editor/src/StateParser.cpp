@@ -41,7 +41,7 @@ bool StateParser::parseState(const char *stateFile, std::string stateID, std::ve
     for (auto e = pStateRoot->FirstChildElement(); e != NULL; e = e->NextSiblingElement()) {
         if (e->Value() == std::string("OBJECTS")) {
             pObjectsRoot = e;
-			break;
+            break;
         }
     }
 

@@ -16,22 +16,22 @@ void PlayState::update()
 {
     if(m_loadingComplete && !m_exiting)
     {
-	    if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE))
-	    {
-	        Game::Instance()->getStateMachine()->pushState(new PauseState());
-	    }
-		
-		BulletHandler::Instance()->updateBullets();
+        if(InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE))
+        {
+            Game::Instance()->getStateMachine()->pushState(new PauseState());
+        }
+        
+        BulletHandler::Instance()->updateBullets();
         
         if(Game::Instance()->getPlayerLives() == 0)
         {
             Game::Instance()->getStateMachine()->changeState(new GameOverState());
         }
-		if(pLevel != 0)
+        if(pLevel != 0)
         {
             pLevel->update();
         }
-	}
+    }
 }
 void PlayState::render()
 {
@@ -76,7 +76,7 @@ bool PlayState::onExit()
     m_exiting = true;
     
     InputHandler::Instance()->reset();
-	BulletHandler::Instance()->clearBullets();
+    BulletHandler::Instance()->clearBullets();
 
     DEBUG("exiting PlayState");
     return true;

@@ -31,7 +31,7 @@ bool Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     logconsoler.Init();
     int flags = 0;
     m_gameWidth = width;
-	m_gameHeight = height;
+    m_gameHeight = height;
 
     if(fullscreen)
     {

@@ -16,25 +16,25 @@ class GameObjectFactory
 {
 public:
 
-	static GameObjectFactory* Instance()
-	{
-		if (s_pInstance == 0)
-		{
-			s_pInstance = new GameObjectFactory();
-			return s_pInstance;
-		}
-		return s_pInstance;
-	}
+    static GameObjectFactory* Instance()
+    {
+        if (s_pInstance == 0)
+        {
+            s_pInstance = new GameObjectFactory();
+            return s_pInstance;
+        }
+        return s_pInstance;
+    }
 
-	bool registerType(std::string typeID, BaseCreator* pCreator);
+    bool registerType(std::string typeID, BaseCreator* pCreator);
 
-	GameObject* create(std::string typeID);
+    GameObject* create(std::string typeID);
 private:
-	GameObjectFactory(){}
-	~GameObjectFactory(){}
+    GameObjectFactory(){}
+    ~GameObjectFactory(){}
 
-	static GameObjectFactory* s_pInstance;
+    static GameObjectFactory* s_pInstance;
 
-	std::map<std::string, BaseCreator*> m_creators;
+    std::map<std::string, BaseCreator*> m_creators;
 };
 #endif //__GAME_OBJECT_FACTORY_H__

@@ -36,8 +36,8 @@ private:
     ~SoundManager();
     std::map< std::string, ALuint> m_sfxs;
     ALCdevice * p_ALCDevice;
-	ALCcontext * p_ALCContext;
+    ALCcontext * p_ALCContext;
     SoundManager(const SoundManager&);
-	SoundManager& operator=(const SoundManager&);
+    SoundManager& operator=(const SoundManager&);
 };
 #endif //__SOUND_MANAGER_H__

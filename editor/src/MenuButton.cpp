@@ -25,7 +25,7 @@ void MenuButton::update()
             
             if(m_callback != 0)
             {
-            	m_callback(); // call our callback function
+                m_callback(); // call our callback function
             }
             
             m_bReleased = false;

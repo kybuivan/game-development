@@ -43,14 +43,14 @@ void GameOverState::render()
 bool GameOverState::onEnter()
 {
     // parse the state
-	StateParser stateParser;
-	stateParser.parseState("assets/attack.xml", s_gameOverID, &m_gameObjects, &m_textureIDList);
-	m_callbacks.push_back(0);
-	m_callbacks.push_back(s_gameOverToMain);
-	m_callbacks.push_back(s_restartPlay);
-	
-	// set the callbacks for menu items
-	setCallbacks(m_callbacks);
+    StateParser stateParser;
+    stateParser.parseState("assets/attack.xml", s_gameOverID, &m_gameObjects, &m_textureIDList);
+    m_callbacks.push_back(0);
+    m_callbacks.push_back(s_gameOverToMain);
+    m_callbacks.push_back(s_restartPlay);
+    
+    // set the callbacks for menu items
+    setCallbacks(m_callbacks);
 
     m_loadingComplete = true;
     return true;
@@ -69,9 +69,9 @@ bool GameOverState::onExit()
     }
 
     // clear the texture manager
-	for(int i = 0; i < m_textureIDList.size(); i++)
-	{
-		TextureManager::Instance()->clearFromTextureMap(m_textureIDList[i]);
+    for(int i = 0; i < m_textureIDList.size(); i++)
+    {
+        TextureManager::Instance()->clearFromTextureMap(m_textureIDList[i]);
     }
 
     InputHandler::Instance()->reset();
@@ -82,14 +82,14 @@ bool GameOverState::onExit()
 
 void GameOverState::setCallbacks(const std::vector<Callback>& callbacks)
 {
-	// go through the game objects
-	for(int i = 0; i < m_gameObjects.size(); i++)
-	{
-		// if they are of type MenuButton then assign a callback based on the id passed in from the file
-		if(dynamic_cast<MenuButton*>(m_gameObjects[i]))
-		{
-			MenuButton* pButton = dynamic_cast<MenuButton*>(m_gameObjects[i]);
-			pButton->setCallback(callbacks[pButton->getCallbackID()]);
-		}
-	}
+    // go through the game objects
+    for(int i = 0; i < m_gameObjects.size(); i++)
+    {
+        // if they are of type MenuButton then assign a callback based on the id passed in from the file
+        if(dynamic_cast<MenuButton*>(m_gameObjects[i]))
+        {
+            MenuButton* pButton = dynamic_cast<MenuButton*>(m_gameObjects[i]);
+            pButton->setCallback(callbacks[pButton->getCallbackID()]);
+        }
+    }
 }

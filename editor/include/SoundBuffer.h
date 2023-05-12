@@ -5,7 +5,7 @@
 class SoundBuffer
 {
 public:
-	static SoundBuffer* Instance()
+    static SoundBuffer* Instance()
     {
         if(s_pInstance == 0)
         {
@@ -15,14 +15,14 @@ public:
         return s_pInstance;
     }
 
-	ALuint addSoundEffect(const char* filename) noexcept;
-	bool removeSoundEffect(const ALuint& buffer) noexcept;
+    ALuint addSoundEffect(const char* filename) noexcept;
+    bool removeSoundEffect(const ALuint& buffer) noexcept;
 
 private:
-	SoundBuffer();
-	~SoundBuffer();
-	static SoundBuffer* s_pInstance;
-	std::vector<ALuint> p_SoundEffectBuffers;
+    SoundBuffer();
+    ~SoundBuffer();
+    static SoundBuffer* s_pInstance;
+    std::vector<ALuint> p_SoundEffectBuffers;
 };
 
 #endif //__SOUND_BUFFER_H__

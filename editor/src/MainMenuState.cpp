@@ -12,18 +12,18 @@ const std::string MainMenuState::s_menuID = "MENU";
 
 void MainMenuState::update()
 {
-	for(int i = 0; i < m_gameObjects.size(); i++)
-	{
-		m_gameObjects[i]->update();
-	}
+    for(int i = 0; i < m_gameObjects.size(); i++)
+    {
+        m_gameObjects[i]->update();
+    }
 }
 
 void MainMenuState::render()
 {
-	for(int i = 0; i < m_gameObjects.size(); i++)
-	{
-		m_gameObjects[i]->draw();
-	}
+    for(int i = 0; i < m_gameObjects.size(); i++)
+    {
+        m_gameObjects[i]->draw();
+    }
 }
 
 bool MainMenuState::onEnter()
@@ -54,12 +54,12 @@ void MainMenuState::setCallbacks(const std::vector<Callback>& callbacks)
                 pButton->setCallback(callbacks[pButton->getCallbackID()]);
             }
         }
-	}
+    }
 }
 
 bool MainMenuState::onExit()
 {
-	m_exiting = true;
+    m_exiting = true;
     
     // clean the game objects
     for(int i = 0; i < m_gameObjects.size(); i++)
@@ -68,16 +68,16 @@ bool MainMenuState::onExit()
     }
     m_gameObjects.clear();
     
-	/* clear the texture manager
-	for(int i = 0; i < m_textureIDList.size(); i++)
-	{
-		TextureManager::Instance()->clearFromTextureMap(m_textureIDList[i]);
-	}
-	*/
-	
+    /* clear the texture manager
+    for(int i = 0; i < m_textureIDList.size(); i++)
+    {
+        TextureManager::Instance()->clearFromTextureMap(m_textureIDList[i]);
+    }
+    */
+    
     TextureManager::Instance()->clearFromTextureMap("exitbutton");
-	
-	// reset the input handler
+    
+    // reset the input handler
     InputHandler::Instance()->reset();
     DEBUG("exiting MenuState");
     return true;

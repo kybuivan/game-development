@@ -42,13 +42,13 @@ void PauseState::render()
 bool PauseState::onEnter()
 {
     StateParser stateParser;
-	stateParser.parseState("assets/attack.xml", s_pauseID, &m_gameObjects, &m_textureIDList);
-	
-	m_callbacks.push_back(0);
-	m_callbacks.push_back(s_pauseToMain);
-	m_callbacks.push_back(s_resumePlay);
-	
-	setCallbacks(m_callbacks);
+    stateParser.parseState("assets/attack.xml", s_pauseID, &m_gameObjects, &m_textureIDList);
+    
+    m_callbacks.push_back(0);
+    m_callbacks.push_back(s_pauseToMain);
+    m_callbacks.push_back(s_resumePlay);
+    
+    setCallbacks(m_callbacks);
 
     m_loadingComplete = true;
     
@@ -68,13 +68,13 @@ bool PauseState::onExit()
     }
 
     // clear the texture manager
-	for(int i = 0; i < m_textureIDList.size(); i++)
-	{
-		TextureManager::Instance()->clearFromTextureMap(m_textureIDList[i]);
-	}
+    for(int i = 0; i < m_textureIDList.size(); i++)
+    {
+        TextureManager::Instance()->clearFromTextureMap(m_textureIDList[i]);
+    }
 
     // reset the mouse button states to false
-	InputHandler::Instance()->reset();
+    InputHandler::Instance()->reset();
 
     DEBUG("exiting PauseState");
     return true;

@@ -5,7 +5,7 @@
 class SoundDevice
 {
 public:
-	static SoundDevice* Instance()
+    static SoundDevice* Instance()
     {
         if(s_pInstance == 0)
         {
@@ -15,12 +15,12 @@ public:
         return s_pInstance;
     }
 private:
-	SoundDevice();
-	~SoundDevice();
-	static SoundDevice* s_pInstance;
-	ALCdevice * p_ALCDevice;
-	ALCcontext * p_ALCContext;
-	SoundDevice * p_SoundDevice;
+    SoundDevice();
+    ~SoundDevice();
+    static SoundDevice* s_pInstance;
+    ALCdevice * p_ALCDevice;
+    ALCcontext * p_ALCContext;
+    SoundDevice * p_SoundDevice;
 };
 
 #endif //__SOURCE_DEVICE_H__

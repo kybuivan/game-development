@@ -75,10 +75,10 @@ Level* LevelParser::parseLevel(const char *levelFile)
 
 void LevelParser::parseTilesets(tinyxml2::XMLElement* pTilesetRoot, std::vector<Tileset>* pTilesets)
 {
-	std::string assetsTag = "assets/";
+    std::string assetsTag = "assets/";
     // first add the tileset to texture manager
     DEBUG("adding texture {}  with ID {}", pTilesetRoot->FirstChildElement()->Attribute("source"), pTilesetRoot->Attribute("name"));
-	TextureManager::Instance()->load(assetsTag.append(pTilesetRoot->FirstChildElement()->Attribute("source")), pTilesetRoot->Attribute("name"), Game::Instance()->getRenderer());
+    TextureManager::Instance()->load(assetsTag.append(pTilesetRoot->FirstChildElement()->Attribute("source")), pTilesetRoot->Attribute("name"), Game::Instance()->getRenderer());
     
     // create a tileset object
     Tileset tileset;
@@ -99,18 +99,18 @@ void LevelParser::parseTilesets(tinyxml2::XMLElement* pTilesetRoot, std::vector<
 void LevelParser::parseTileLayer(tinyxml2::XMLElement* pTileElement, std::vector<Layer*> *pLayers, const std::vector<Tileset>* pTilesets, std::vector<TileLayer*> *pCollisionLayers)
 {
     TileLayer* pTileLayer = new TileLayer(m_tileSize, *pTilesets);
-	
+    
     bool collidable = false;
     
-	// tile data
-	std::vector<std::vector<int>> data;
-	
-	std::string decodeIDs;
-	tinyxml2::XMLElement* pDataNode;
-	
-	for(tinyxml2::XMLElement* e = pTileElement->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
-	{
-		if(e->Value() == std::string("properties"))
+    // tile data
+    std::vector<std::vector<int>> data;
+    
+    std::string decodeIDs;
+    tinyxml2::XMLElement* pDataNode;
+    
+    for(tinyxml2::XMLElement* e = pTileElement->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
+    {
+        if(e->Value() == std::string("properties"))
         {
             for(tinyxml2::XMLElement* property = e->FirstChildElement(); property != NULL; property = property->NextSiblingElement())
             {
@@ -123,64 +123,64 @@ void LevelParser::parseTileLayer(tinyxml2::XMLElement* pTileElement, std::vector
                 }
             }
         }
-		if(e->Value() == std::string("data"))
-		{
-			pDataNode = e;
-		}
-	}
-	
-	for(tinyxml2::XMLNode* e = pDataNode->FirstChild(); e != NULL; e = e->NextSibling())
-	{
-		tinyxml2::XMLText* text = e->ToText();
-		std::string t = text->Value();
-		decodeIDs = base64_decode(t);
-	}
-	
+        if(e->Value() == std::string("data"))
+        {
+            pDataNode = e;
+        }
+    }
+    
+    for(tinyxml2::XMLNode* e = pDataNode->FirstChild(); e != NULL; e = e->NextSibling())
+    {
+        tinyxml2::XMLText* text = e->ToText();
+        std::string t = text->Value();
+        decodeIDs = base64_decode(t);
+    }
+    
     if(decodeIDs.empty())
     {
         ERROR("could decore IDs data from xml");
         return;
     }
 
-	unsigned long numGids = m_width * m_height;//* sizeof(int);
-	std::vector<unsigned> gids(numGids);
-	
-	// Fix until i know how base 64 works
-	for(int i = 0; i < numGids; i++)
-	{	
-		gids[i] = (unsigned)(decodeIDs[i * 4]) * 1 +
-				  (unsigned)(decodeIDs[(i * 4) + 1]) * 2 +
-				  (unsigned)(decodeIDs[(i * 4) + 2]) * 4 +
-				  (unsigned)(decodeIDs[(i * 4) + 3]) * 8;
-	}
+    unsigned long numGids = m_width * m_height;//* sizeof(int);
+    std::vector<unsigned> gids(numGids);
+    
+    // Fix until i know how base 64 works
+    for(int i = 0; i < numGids; i++)
+    {    
+        gids[i] = (unsigned)(decodeIDs[i * 4]) * 1 +
+                  (unsigned)(decodeIDs[(i * 4) + 1]) * 2 +
+                  (unsigned)(decodeIDs[(i * 4) + 2]) * 4 +
+                  (unsigned)(decodeIDs[(i * 4) + 3]) * 8;
+    }
 
     //uncompress((Bytef*)&gids[0], &numGids, (const Bytef*)decodedIDs.c_str(), decodedIDs.size());
 
-	std::vector<int> layerRow(m_width);
-	
-	for(int j = 0; j < m_height; j++)
-	{
-		data.push_back(layerRow);
-	}
-	
-	for(int rows = 0; rows < m_height; rows++)
-	{
-		for(int cols = 0; cols < m_width; cols++)
-		{
-			data[rows][cols] = gids[rows * m_width + cols];
-		}
-	}
+    std::vector<int> layerRow(m_width);
+    
+    for(int j = 0; j < m_height; j++)
+    {
+        data.push_back(layerRow);
+    }
+    
+    for(int rows = 0; rows < m_height; rows++)
+    {
+        for(int cols = 0; cols < m_width; cols++)
+        {
+            data[rows][cols] = gids[rows * m_width + cols];
+        }
+    }
 
 
-	pTileLayer->setTileIDs(data);
-	pTileLayer->setMapWidth(m_width);
+    pTileLayer->setTileIDs(data);
+    pTileLayer->setMapWidth(m_width);
     
     if(collidable)
     {
         pCollisionLayers->push_back(pTileLayer);
     }
-	
-	pLayers->push_back(pTileLayer);
+    
+    pLayers->push_back(pTileLayer);
 }
 
 void LevelParser::parseTextures(tinyxml2::XMLElement* pTextureRoot)

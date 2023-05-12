@@ -17,7 +17,7 @@ void GameStateMachine::update()
     if(!m_gameStates.empty())
     {
         m_gameStates.back()->update();
-	}
+    }
 }
 
 void GameStateMachine::render()
@@ -54,11 +54,11 @@ void GameStateMachine::changeState(GameState *pState)
             return; // do nothing
         }
 
-		m_gameStates.back()->onExit();
-		m_gameStates.pop_back();
+        m_gameStates.back()->onExit();
+        m_gameStates.pop_back();
     }
 
-	// initialise it
+    // initialise it
     pState->onEnter();
     
     // push back our new state

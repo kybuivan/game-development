@@ -54,8 +54,8 @@ void InputHandler::initialiseJoysticks()
             }
             else
             {
-				m_joysticks.push_back(nullptr);
-				m_buttonStates.push_back(std::vector<bool>());
+                m_joysticks.push_back(nullptr);
+                m_buttonStates.push_back(std::vector<bool>());
                 ERROR(SDL_GetError());
             }
         }

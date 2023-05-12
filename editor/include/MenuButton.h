@@ -33,9 +33,9 @@ private:
 
 class MenuButtonCreator : public BaseCreator
 {
-	GameObject* createGameObject() const
-	{
-		return new MenuButton();
-	}
+    GameObject* createGameObject() const
+    {
+        return new MenuButton();
+    }
 };
 #endif //__MENU_BUTTON_H__

@@ -31,17 +31,17 @@ public:
     void drawTile(std::string id, int margin, int spacing, int x, int y, int width, int height, int currentRow, int currentFrame, SDL_Renderer *pRenderer);
 
     // clearTextureMap
-	void clearTextureMap();
+    void clearTextureMap();
     void clearFromTextureMap(std::string id);
-	
-	std::map<std::string, SDL_Texture*> getTextureMap() { return m_textureMap; }
+    
+    std::map<std::string, SDL_Texture*> getTextureMap() { return m_textureMap; }
 private:
     /* data */
     TextureManager(/* args */){}
     ~TextureManager() {}
     
     TextureManager(const TextureManager&);
-	TextureManager& operator=(const TextureManager&);
+    TextureManager& operator=(const TextureManager&);
     
     std::map<std::string, SDL_Texture*> m_textureMap;
     static TextureManager* s_pInstance;
