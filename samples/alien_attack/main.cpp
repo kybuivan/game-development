@@ -27,14 +27,14 @@ int main(int argc, char* args[])
         return 1;
     }
     std::vector<std::string> levelFiles;
-    levelFiles.push_back("assets/map1.tmx");
-    levelFiles.push_back("assets/map2.tmx");
+    levelFiles.push_back("assets/maps/map1.tmx");
+    levelFiles.push_back("assets/maps/map2.tmx");
 
     Game::Instance()->setLevelFiles(levelFiles);
     // add some sound effects - TODO move to better place
-    SoundManager::Instance()->load("assets/DST_ElectroRock.ogg", "music1");
-    SoundManager::Instance()->load("assets/boom.wav", "explode");
-    SoundManager::Instance()->load("assets/phaser.wav", "shoot");
+    SoundManager::Instance()->load("assets/sounds/DST_ElectroRock.ogg", "music1");
+    SoundManager::Instance()->load("assets/sounds/boom.wav", "explode");
+    SoundManager::Instance()->load("assets/sounds/phaser.wav", "shoot");
     
     SoundManager::Instance()->playSound("music1");
 

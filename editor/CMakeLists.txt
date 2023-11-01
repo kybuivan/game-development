@@ -1,6 +1,6 @@
 include(FetchContent)
 include(stb)
-include(sdl)
+include(sdl2)
 include(tinyxml2)
 include(openal)
 include(sndfile)
@@ -8,10 +8,10 @@ include(sndfile)
 add_module()
 target_link_libraries(editor PUBLIC
     core::core
-    stb::stb
-    SDL2::SDL2
-    SDL2::SDL2main
-    tinyxml2::tinyxml2
-    OpenAL::OpenAL
-    sndfile::sndfile
+    external::stb
+    external::sdl2
+    external::sdl2main
+    external::tinyxml2
+    external::openal
+    external::sndfile
 ) 

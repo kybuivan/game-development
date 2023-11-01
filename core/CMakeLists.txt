@@ -4,8 +4,8 @@ include(spdlog)
 
 add_module()
 target_link_libraries(core PUBLIC
-    fmt::fmt
-    spdlog::spdlog
+    external::fmt
+    external::spdlog
 )
 
 add_library(core::core ALIAS core)
